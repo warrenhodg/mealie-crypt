@@ -8,16 +8,16 @@ func addPubKey(file *string, alias *string, keyFile *string, comment *string) er
         return err
     }
 
-    keyContent, err := readKey(keyFile)
+    keyValue, err := readKey(keyFile)
     if err != nil {
         return err
     }
 
     teamPassKey.Alias = *alias
-    teamPassKey.Key = keyContent
+    teamPassKey.Value = keyValue
     teamPassKey.Comment = *comment
 
-    teamPassFile.Keys = append(teamPassFile.Keys, teamPassKey)
+    teamPassFile.PublicKeys = append(teamPassFile.PublicKeys, teamPassKey)
 
     return writeFile(file, teamPassFile)
 }

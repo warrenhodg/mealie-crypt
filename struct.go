@@ -1,7 +1,6 @@
 package main
 
 import (
-    "errors"
     "gopkg.in/yaml.v2"
     "io/ioutil"
     "os"
@@ -9,18 +8,19 @@ import (
 
 type TeamPassFile struct {
     Comment string `yaml:"comment"`
-    Keys []TeamPassKey `yaml:"keys"`
+    PublicKeys []TeamPassKey `yaml:"public_keys"`
 }
 
 type TeamPassKey struct {
     Alias string `yaml:"alias"`
-    Key string `yaml:"key"`
+    Value string `yaml:"value"`
     Comment string `yaml:"comment"`
 }
 
 func readFile(filename *string) (teamPassFile TeamPassFile, err error) {
-    if *filename == "" {
-        err = errors.New("File not specified")
+    _, err = os.Stat(*filename)
+    if os.IsNotExist(err) {
+        err = nil
         return
     }
 
@@ -36,7 +36,7 @@ func readFile(filename *string) (teamPassFile TeamPassFile, err error) {
         return
     }
 
-    err = yaml.Unmarshal(bytes, teamPassFile)
+    err = yaml.Unmarshal(bytes, &teamPassFile)
     if err != nil {
         return
     }
@@ -45,11 +45,6 @@ func readFile(filename *string) (teamPassFile TeamPassFile, err error) {
 }
 
 func writeFile(filename *string, teamPassFile TeamPassFile) (err error) {
-    if *filename == "" {
-        err = errors.New("File not specified")
-        return
-    }
-
     file, err := os.Create(*filename)
     if err != nil {
         return
