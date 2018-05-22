@@ -5,5 +5,5 @@ func initFile(filename *string, comment *string) error {
 
     teamPassFile.Comment = *comment
 
-    return writeFile(filename, teamPassFile)
+    return writeFile(filename, true, teamPassFile)
 }

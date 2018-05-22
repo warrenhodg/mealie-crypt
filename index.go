@@ -19,9 +19,9 @@ func main() {
 
     app.Command("init-file", "Initialize a new empty file")
 
-    addPubKeyCommand := app.Command("add-pub-key", "Add a public key to the project")
-    addPubKeyAlias := addPubKeyCommand.Flag("alias", "Alias for key to add").Short('a').Required().String()
-    addPubKeyFile := addPubKeyCommand.Flag("pub-key", "Filename of public key to add").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
+    addUserCommand := app.Command("add-user", "Add a user to the project")
+    addUserName := addUserCommand.Flag("name", "Name for key to add").Short('n').Required().String()
+    addUserFile := addUserCommand.Flag("pub-key", "Filename of user's public key to add").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
 
     err := func() error {
         command, err := app.Parse(os.Args[1:])
@@ -33,8 +33,8 @@ func main() {
         case "init-file":
             return initFile(filename, comment)
 
-        case "add-pub-key":
-            return addPubKey(filename, addPubKeyAlias, addPubKeyFile, comment)
+        case "add-user":
+            return addUser(filename, addUserName, addUserFile, comment)
         }
 
         return nil

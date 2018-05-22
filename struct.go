@@ -1,6 +1,8 @@
 package main
 
 import (
+    "errors"
+    "fmt"
     "gopkg.in/yaml.v2"
     "io/ioutil"
     "os"
@@ -8,25 +10,39 @@ import (
 
 type TeamPassFile struct {
     Comment string `yaml:"comment"`
-    PublicKeys []TeamPassKey `yaml:"public_keys"`
+    Users []TeamPassUser `yaml:"users"`
 }
 
-type TeamPassKey struct {
-    Alias string `yaml:"alias"`
+type TeamPassUser struct {
+    Name string `yaml:"name"`
     Value string `yaml:"value"`
     Comment string `yaml:"comment"`
 }
 
-func readFile(filename *string) (teamPassFile TeamPassFile, err error) {
+func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err error) {
+    var file *os.File
+
     _, err = os.Stat(*filename)
     if os.IsNotExist(err) {
         err = nil
         return
     }
 
-    file, err := os.Open(*filename)
-    if err != nil {
-        return
+    if (*filename == "-") {
+        file = os.Stdin
+    } else {
+        if mustExist {
+            _, err = os.Stat(*filename)
+            if os.IsNotExist(err) {
+                err = errors.New(fmt.Sprintf("File does not exist : %s", *filename))
+                return
+            }
+        }
+
+        file, err = os.Open(*filename)
+        if err != nil {
+            return
+        }
     }
 
     defer file.Close()
@@ -44,10 +60,24 @@ func readFile(filename *string) (teamPassFile TeamPassFile, err error) {
     return
 }
 
-func writeFile(filename *string, teamPassFile TeamPassFile) (err error) {
-    file, err := os.Create(*filename)
-    if err != nil {
-        return
+func writeFile(filename *string, mustNotExist bool, teamPassFile TeamPassFile) (err error) {
+    var file *os.File
+
+    if *filename == "-" {
+        file = os.Stdout
+    } else {
+        if mustNotExist {
+            _, err = os.Stat(*filename)
+            if !os.IsNotExist(err) {
+                err = errors.New(fmt.Sprintf("File already exists : %s", *filename))
+                return
+            }
+        }
+
+        file, err = os.Create(*filename)
+        if err != nil {
+            return
+        }
     }
 
     defer file.Close()

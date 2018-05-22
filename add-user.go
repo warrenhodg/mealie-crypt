@@ -1,9 +1,9 @@
 package main
 
-func addPubKey(file *string, alias *string, keyFile *string, comment *string) error {
-    var teamPassKey TeamPassKey
+func addUser(file *string, name *string, keyFile *string, comment *string) error {
+    var user TeamPassUser
 
-    teamPassFile, err := readFile(file)
+    teamPassFile, err := readFile(file, true)
     if err != nil {
         return err
     }
@@ -13,11 +13,11 @@ func addPubKey(file *string, alias *string, keyFile *string, comment *string) er
         return err
     }
 
-    teamPassKey.Alias = *alias
-    teamPassKey.Value = keyValue
-    teamPassKey.Comment = *comment
+    user.Name = *name
+    user.Value = keyValue
+    user.Comment = *comment
 
-    teamPassFile.PublicKeys = append(teamPassFile.PublicKeys, teamPassKey)
+    teamPassFile.Users = append(teamPassFile.Users, user)
 
-    return writeFile(file, teamPassFile)
+    return writeFile(file, false, teamPassFile)
 }
