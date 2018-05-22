@@ -1,6 +1,8 @@
 package main
 
 import (
+    "errors"
+    "fmt"
     "gopkg.in/alecthomas/kingpin.v2"
     "os"
 )
@@ -23,9 +25,15 @@ func addUser() error {
         return err
     }
 
-    keyValue, err := readKey(addUserKeyFile)
+    keyValue, _, err := readPublicKey(addUserKeyFile)
     if err != nil {
         return err
+    }
+
+    for i := 0; i < len(teamPassFile.Users); i++ {
+        if teamPassFile.Users[i].Name == *addUserName {
+            return errors.New(fmt.Sprintf("User already exists : %s", *addUserName))
+        }
     }
 
     user.Name = *addUserName
