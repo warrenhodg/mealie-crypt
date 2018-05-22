@@ -10,18 +10,21 @@ var appName = "teampass"
 var appDescription = "Utility for teams to manage sensitive information"
 var version = "1.0.0"
 
+var filename *string
+var comment *string
+
+func addGlobalFlags(app *kingpin.Application) {
+    filename = app.Flag("file", "Name of file to manage").Short('f').Default("teampass.yaml").String()
+    comment = app.Flag("comment", "A comment").Short('c').String()
+}
+
 func main() {
     app := kingpin.New(appName, appDescription)
     app.Version(version)
 
-    filename := app.Flag("file", "Name of file to manage").Short('f').Default("teampass.yaml").String()
-    comment := app.Flag("comment", "A comment").Short('c').String()
-
-    app.Command("init-file", "Initialize a new empty file")
-
-    addUserCommand := app.Command("add-user", "Add a user to the project")
-    addUserName := addUserCommand.Flag("name", "Name for key to add").Short('n').Required().String()
-    addUserFile := addUserCommand.Flag("pub-key", "Filename of user's public key to add").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
+    addGlobalFlags(app)
+    addInitFileCommand(app)
+    addAddUserCommand(app)
 
     err := func() error {
         command, err := app.Parse(os.Args[1:])
@@ -31,10 +34,10 @@ func main() {
 
         switch(command) {
         case "init-file":
-            return initFile(filename, comment)
+            return initFile()
 
         case "add-user":
-            return addUser(filename, addUserName, addUserFile, comment)
+            return addUser()
         }
 
         return nil

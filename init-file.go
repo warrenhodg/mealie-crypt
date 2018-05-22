@@ -1,6 +1,14 @@
 package main
 
-func initFile(filename *string, comment *string) error {
+import (
+    "gopkg.in/alecthomas/kingpin.v2"
+)
+
+func addInitFileCommand(app *kingpin.Application) {
+    app.Command("init-file", "Initialize a new empty file")
+}
+
+func initFile() error {
     var teamPassFile TeamPassFile
 
     teamPassFile.Comment = *comment
