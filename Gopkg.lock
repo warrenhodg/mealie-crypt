@@ -23,6 +23,12 @@
   revision = "dda221cd386dd550912f2ea7c18c2ce1e39605a2"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/warrenhodg/go_licenses"
+  packages = ["."]
+  revision = "28921be450f4deed967fe4690b8843a3a97e2893"
+
+[[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"
   packages = ["."]
   revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
@@ -37,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "280cd8804713a50c757d747cff02790b4357c386f8de3b5281d1f616d026343e"
+  inputs-digest = "3027056abb4d32fe000480c800536d455b8bd996acafffc148c3a67764054dce"
   solver-name = "gps-cdcl"
   solver-version = 1
