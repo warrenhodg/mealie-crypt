@@ -9,6 +9,8 @@ import (
 var appName = "teampass"
 var appDescription = "Utility for teams to manage sensitive information"
 var version = "1.0.0"
+var copyrightYear = 2018
+var copyrightHolder = "Warren Hodgkinson"
 
 var filename *string
 var comment *string
@@ -23,6 +25,7 @@ func main() {
     app.Version(version)
 
     addGlobalFlags(app)
+    addLicenseCommand(app)
     addInitFileCommand(app)
     addAddUserCommand(app)
 
@@ -33,6 +36,9 @@ func main() {
         }
 
         switch(command) {
+        case "license":
+            return showLicense()
+
         case "init-file":
             return initFile()
 
