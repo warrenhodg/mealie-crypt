@@ -1,9 +1,9 @@
 package main
 
 import (
-    "fmt"
-    "gopkg.in/alecthomas/kingpin.v2"
-    "os"
+	"fmt"
+	"gopkg.in/alecthomas/kingpin.v2"
+	"os"
 )
 
 var appName = "teampass"
@@ -16,41 +16,45 @@ var filename *string
 var comment *string
 
 func addGlobalFlags(app *kingpin.Application) {
-    filename = app.Flag("file", "Name of file to manage").Short('f').Default("teampass.yaml").String()
-    comment = app.Flag("comment", "A comment").Short('c').String()
+	filename = app.Flag("file", "Name of file to manage").Short('f').Default("teampass.yaml").String()
+	comment = app.Flag("comment", "A comment").Short('c').String()
 }
 
 func main() {
-    app := kingpin.New(appName, appDescription)
-    app.Version(version)
+	app := kingpin.New(appName, appDescription)
+	app.Version(version)
 
-    addGlobalFlags(app)
-    addLicenseCommand(app)
-    addInitFileCommand(app)
-    addAddUserCommand(app)
+	addGlobalFlags(app)
+	addLicenseCommand(app)
+	addInitFileCommand(app)
+	addAddUserCommand(app)
+	addAddGroupCommand(app)
 
-    err := func() error {
-        command, err := app.Parse(os.Args[1:])
-        if err != nil {
-            return err
-        }
+	err := func() error {
+		command, err := app.Parse(os.Args[1:])
+		if err != nil {
+			return err
+		}
 
-        switch(command) {
-        case "license":
-            return showLicense()
+		switch command {
+		case "license":
+			return showLicense()
 
-        case "init-file":
-            return initFile()
+		case "init-file":
+			return initFile()
 
-        case "add-user":
-            return addUser()
-        }
+		case "add-user":
+			return addUser()
 
-        return nil
-    }()
+		case "add-group":
+			return addGroup()
+		}
 
-    if err != nil {
-        fmt.Printf("%s", err.Error())
-        os.Exit(1)
-    }
+		return nil
+	}()
+
+	if err != nil {
+		fmt.Printf("%s", err.Error())
+		os.Exit(1)
+	}
 }
