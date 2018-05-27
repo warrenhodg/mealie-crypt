@@ -60,10 +60,19 @@ func handleListUsersCommand(commands []string) error {
 	return nil
 }
 
+func checkUsername() error {
+	return checkParam(*userName, "^.+$", "Username must not be empty")
+}
+
 func handleAddUserCommand(commands []string) error {
 	var user TeamPassUser
 
 	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	err = checkUsername()
 	if err != nil {
 		return err
 	}
@@ -88,6 +97,11 @@ func handleAddUserCommand(commands []string) error {
 
 func handleRemoveUserCommand(commands []string) error {
 	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	err = checkUsername()
 	if err != nil {
 		return err
 	}

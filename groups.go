@@ -61,6 +61,14 @@ func handleGroupsCommand(commands []string) error {
 	}
 }
 
+func checkGroupname() error {
+	return checkParam(*groupName, "^.+$", "Groupname must not be empty")
+}
+
+func checkGroupsUsername() error {
+	return checkParam(*groupsUsername, "^.+$", "Username must not be empty")
+}
+
 func handleListGroupsCommand(commands []string) error {
 	teamPassFile, err := readFile(filename, true)
 	if err != nil {
@@ -88,6 +96,11 @@ func handleAddGroupCommand(commands []string) error {
 	var group TeamPassGroup
 
 	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	err = checkGroupname()
 	if err != nil {
 		return err
 	}
@@ -128,6 +141,11 @@ func handleRemoveGroupCommand(commands []string) error {
 		return err
 	}
 
+	err = checkGroupname()
+	if err != nil {
+		return err
+	}
+
 	//Remove group from groups
 	delete(teamPassFile.Groups, *groupName)
 
@@ -140,9 +158,19 @@ func handleGroupAddUserCommand(commands []string) error {
 		return err
 	}
 
+	err = checkGroupsUsername()
+	if err != nil {
+		return err
+	}
+
 	_, found := teamPassFile.Users[*groupsUsername]
 	if !found {
-		return errors.New(fmt.Sprintf("User not found : %s", groupsUsername))
+		return errors.New(fmt.Sprintf("User not found : %s", *groupsUsername))
+	}
+
+	err = checkGroupname()
+	if err != nil {
+		return err
 	}
 
 	group, found := teamPassFile.Groups[*groupName]

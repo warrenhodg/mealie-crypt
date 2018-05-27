@@ -24,7 +24,7 @@ func setupValuesCommand(app *kingpin.Application) {
 	valuesGroup = valuesCommand.Flag("group", "Name of group").Short('g').Default("_").String()
 	valuesUsername = valuesCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
 	valuesPrivateKeyFile = valuesCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa").String()
-	valuesName = valuesCommand.Flag("name", "Name of value").Short('n').Default("*").String()
+	valuesName = valuesCommand.Flag("name", "Name of value").Short('n').String()
 	valuesValue = valuesCommand.Flag("value", "Value").Short('v').String()
 
 	listValuesCommand = valuesCommand.Command("list", "List values")
@@ -97,6 +97,10 @@ func handleGetValueCommand(commands []string) error {
 	symKey, err := decryptSymmetricalKey(encSymKey, *valuesPrivateKeyFile)
 	if err != nil {
 		return err
+	}
+
+	if *valuesName == "" {
+		*valuesName = "*"
 	}
 
 	g, err := glob.Compile(*valuesName)

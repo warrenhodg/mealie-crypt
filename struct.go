@@ -6,6 +6,7 @@ import (
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+	"regexp"
 )
 
 type TeamPassFile struct {
@@ -117,4 +118,17 @@ func writeFile(filename *string, mustNotExist bool, teamPassFile TeamPassFile) (
 	}
 
 	return
+}
+
+func checkParam(param string, regex string, message string) error {
+	re, err := regexp.Compile(regex)
+	if err != nil {
+		return err
+	}
+
+	if !re.MatchString(param) {
+		return errors.New(fmt.Sprintf(message))
+	}
+
+	return nil
 }
