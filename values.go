@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/gobwas/glob"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
 )
@@ -23,12 +24,13 @@ func setupValuesCommand(app *kingpin.Application) {
 	valuesGroup = valuesCommand.Flag("group", "Name of group").Short('g').Default("_").String()
 	valuesUsername = valuesCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
 	valuesPrivateKeyFile = valuesCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa").String()
-	valuesName = valuesCommand.Flag("name", "Name of value").Short('n').String()
+	valuesName = valuesCommand.Flag("name", "Name of value").Short('n').Default("*").String()
 	valuesValue = valuesCommand.Flag("value", "Value").Short('v').String()
 
 	listValuesCommand = valuesCommand.Command("list", "List values")
 
 	setValueCommand = valuesCommand.Command("set", "Set value")
+
 	getValueCommand = valuesCommand.Command("get", "Get value")
 }
 
@@ -97,17 +99,21 @@ func handleGetValueCommand(commands []string) error {
 		return err
 	}
 
-	encValue, found := group.Values[*valuesName]
-	if !found {
-		return errors.New(fmt.Sprintf("Value not found : %s", *valuesName))
-	}
-
-	decValue, err := decryptValue(symKey, encValue)
+	g, err := glob.Compile(*valuesName)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("%s\n", decValue)
+	for valueName, encValue := range group.Values {
+		if g.Match(valueName) {
+			decValue, err := decryptValue(symKey, encValue)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("%s : %s\n", valueName, decValue)
+		}
+	}
 
 	return nil
 }
