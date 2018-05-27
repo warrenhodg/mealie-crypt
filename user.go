@@ -15,11 +15,15 @@ var userKeyFile *string
 
 var removeUserCommand *kingpin.CmdClause
 
+var listUsersCommand *kingpin.CmdClause
+
 func setupUserCommand(app *kingpin.Application) {
 	userCommand = app.Command("user", "Manage users in the file")
 
-	userName = userCommand.Flag("name", "Name of user").Short('n').Default(os.Getenv("USER")).String()
+	userName = userCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
 	userKeyFile = userCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
+
+	addUserCommand = userCommand.Command("list", "List users in the project")
 
 	addUserCommand = userCommand.Command("add", "Add a user to the project")
 
@@ -32,6 +36,8 @@ func handleUserCommand(commands []string) error {
 	}
 
 	switch commands[1] {
+	case "list":
+		return handleListUsersCommand(commands)
 	case "add":
 		return handleAddUserCommand(commands)
 	case "remove":
@@ -39,6 +45,19 @@ func handleUserCommand(commands []string) error {
 	default:
 		return errors.New(fmt.Sprintf("User subcommand not supported : %s", commands[1]))
 	}
+}
+
+func handleListUsersCommand(commands []string) error {
+	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	for username, _ := range teamPassFile.Users {
+		fmt.Printf("%s\n", username)
+	}
+
+	return nil
 }
 
 func handleAddUserCommand(commands []string) error {
