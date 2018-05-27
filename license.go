@@ -1,16 +1,16 @@
 package main
 
 import (
-    "fmt"
-    "gopkg.in/alecthomas/kingpin.v2"
-    "github.com/warrenhodg/go_licenses"
+	"fmt"
+	"github.com/warrenhodg/go_licenses"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
-func addLicenseCommand(app *kingpin.Application) {
-    app.Command("license", "Show the license")
+func setupLicenseCommand(app *kingpin.Application) {
+	app.Command("license", "Show the license")
 }
 
-func showLicense() error {
-    fmt.Printf(license.Mit(copyrightYear, copyrightHolder))
-    return nil
+func handleLicenseCommand(commands []string) error {
+	fmt.Printf(license.Mit(copyrightYear, copyrightHolder))
+	return nil
 }

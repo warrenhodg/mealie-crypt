@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
+	"strings"
 )
 
 var appName = "teampass"
@@ -25,29 +26,31 @@ func main() {
 	app.Version(version)
 
 	addGlobalFlags(app)
-	addLicenseCommand(app)
-	addInitFileCommand(app)
-	addAddUserCommand(app)
-	addAddGroupCommand(app)
+	setupLicenseCommand(app)
+	setupFileCommand(app)
+	setupUserCommand(app)
+	setupGroupCommand(app)
 
 	err := func() error {
-		command, err := app.Parse(os.Args[1:])
+		fullCommand, err := app.Parse(os.Args[1:])
 		if err != nil {
 			return err
 		}
 
-		switch command {
+		commands := strings.Split(fullCommand, " ")
+
+		switch commands[0] {
 		case "license":
-			return showLicense()
+			return handleLicenseCommand(commands)
 
-		case "init-file":
-			return initFile()
+		case "file":
+			return handleFileCommand(commands)
 
-		case "add-user":
-			return addUser()
+		case "user":
+			return handleUserCommand(commands)
 
-		case "add-group":
-			return addGroup()
+		case "group":
+			return handleGroupCommand(commands)
 		}
 
 		return nil

@@ -9,24 +9,35 @@ import (
 )
 
 type TeamPassFile struct {
-	Comment string          `yaml:"comment"`
-	Users   []TeamPassUser  `yaml:"users"`
-	Groups  []TeamPassGroup `yaml:"groups"`
+	Comment string                   `yaml:"comment"`
+	Users   map[string]TeamPassUser  `yaml:"users"`
+	Groups  map[string]TeamPassGroup `yaml:"groups"`
 }
 
 type TeamPassUser struct {
-	Name    string `yaml:"name"`
-	Value   string `yaml:"value"`
-	Comment string `yaml:"comment"`
+	PublicKey string `yaml:"public_key"`
+	Comment   string `yaml:"comment"`
 }
 
 type TeamPassGroup struct {
-	Name string            `yaml:"name"`
 	Keys map[string]string `yaml:"keys"`
+}
+
+func (teamPassFile *TeamPassFile) ensureMapsExist() {
+	if teamPassFile.Users == nil {
+		teamPassFile.Users = make(map[string]TeamPassUser)
+	}
+
+	if teamPassFile.Groups == nil {
+		teamPassFile.Groups = make(map[string]TeamPassGroup)
+	}
+
 }
 
 func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err error) {
 	var file *os.File
+
+	defer teamPassFile.ensureMapsExist()
 
 	_, err = os.Stat(*filename)
 	if os.IsNotExist(err) {
