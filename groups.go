@@ -17,17 +17,25 @@ var groupUserNames *[]string
 
 var removeGroupCommand *kingpin.CmdClause
 
+var groupAddUserCommand *kingpin.CmdClause
+var groupsUsername *string
+var groupsPrivateKeyFile *string
+
 func setupGroupsCommand(app *kingpin.Application) {
 	groupsCommand = app.Command("groups", "Manage groups")
 
 	groupName = groupsCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
-	groupUserNames = groupsCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
+	groupUserNames = groupsCommand.Flag("users", "Names of users").Short('U').Default(os.Getenv("USER")).Strings()
 
 	listGroupsCommand = groupsCommand.Command("list", "List groups")
 
 	addGroupCommand = groupsCommand.Command("add", "Add a group")
 
 	removeGroupCommand = groupsCommand.Command("remove", "Remove a group")
+
+	groupAddUserCommand = groupsCommand.Command("add-user", "Add user to group")
+	groupsUsername = groupsCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
+	groupsPrivateKeyFile = groupsCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa").String()
 }
 
 func handleGroupsCommand(commands []string) error {
@@ -38,10 +46,16 @@ func handleGroupsCommand(commands []string) error {
 	switch commands[1] {
 	case "list":
 		return handleListGroupsCommand(commands)
+
 	case "add":
 		return handleAddGroupCommand(commands)
+
 	case "remove":
 		return handleRemoveGroupCommand(commands)
+
+	case "add-user":
+		return handleGroupAddUserCommand(commands)
+
 	default:
 		return errors.New(fmt.Sprintf("Groups subcommand not supported : %s", commands[1]))
 	}
@@ -116,6 +130,53 @@ func handleRemoveGroupCommand(commands []string) error {
 
 	//Remove group from groups
 	delete(teamPassFile.Groups, *groupName)
+
+	return writeFile(filename, false, teamPassFile)
+}
+
+func handleGroupAddUserCommand(commands []string) error {
+	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	_, found := teamPassFile.Users[*groupsUsername]
+	if !found {
+		return errors.New(fmt.Sprintf("User not found : %s", groupsUsername))
+	}
+
+	group, found := teamPassFile.Groups[*groupName]
+	if !found {
+		return errors.New(fmt.Sprintf("Group does not exist : %s", *groupName))
+	}
+
+	encSymKey, found := group.Keys[*groupsUsername]
+	if !found {
+		return errors.New(fmt.Sprintf("User not part of group : %s", *groupsUsername))
+	}
+
+	symKey, err := decryptSymmetricalKey(encSymKey, *groupsPrivateKeyFile)
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(*groupUserNames); i++ {
+		username := (*groupUserNames)[i]
+		user, found := teamPassFile.Users[username]
+		if !found {
+			return errors.New(fmt.Sprintf("User was not found : %s", username))
+		}
+
+		_, found = group.Keys[username]
+		if !found {
+			err := addEncryptedSymmetricKey(&group, symKey, username, user.PublicKey)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	teamPassFile.Groups[*groupName] = group
 
 	return writeFile(filename, false, teamPassFile)
 }
