@@ -18,16 +18,16 @@ var removeUserCommand *kingpin.CmdClause
 var listUsersCommand *kingpin.CmdClause
 
 func setupUserCommand(app *kingpin.Application) {
-	userCommand = app.Command("user", "Manage users in the file")
+	userCommand = app.Command("user", "Manage users")
 
 	userName = userCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
 	userKeyFile = userCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
 
-	addUserCommand = userCommand.Command("list", "List users in the project")
+	addUserCommand = userCommand.Command("list", "List users")
 
-	addUserCommand = userCommand.Command("add", "Add a user to the project")
+	addUserCommand = userCommand.Command("add", "Add a user")
 
-	removeUserCommand = userCommand.Command("remove", "Remove a user from the project")
+	removeUserCommand = userCommand.Command("remove", "Remove a user")
 }
 
 func handleUserCommand(commands []string) error {
