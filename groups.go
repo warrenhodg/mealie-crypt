@@ -20,18 +20,18 @@ var removeGroupCommand *kingpin.CmdClause
 func setupGroupsCommand(app *kingpin.Application) {
 	groupsCommand = app.Command("groups", "Manage groups")
 
-	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
-	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
+	groupName = groupsCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
+	groupUserNames = groupsCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
 
-	listGroupsCommand = groupCommand.Command("list", "List groups")
+	listGroupsCommand = groupsCommand.Command("list", "List groups")
 
-	addGroupCommand = groupCommand.Command("add", "Add a group")
+	addGroupCommand = groupsCommand.Command("add", "Add a group")
 
-	removeGroupCommand = groupCommand.Command("remove", "Remove a group")
+	removeGroupCommand = groupsCommand.Command("remove", "Remove a group")
 }
 
-func handleGroupCommand(commands []string) error {
-	if len(commands) < 1 {
+func handleGroupsCommand(commands []string) error {
+	if len(commands) < 2 {
 		return errors.New("No subcommand found for groups command")
 	}
 

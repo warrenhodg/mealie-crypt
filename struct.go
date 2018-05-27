@@ -20,7 +20,8 @@ type TeamPassUser struct {
 }
 
 type TeamPassGroup struct {
-	Keys map[string]string `yaml:"keys"`
+	Keys   map[string]string `yaml:"keys"`
+	Values map[string]string `yaml:"values"`
 }
 
 func (teamPassFile *TeamPassFile) ensureMapsExist() {
@@ -32,6 +33,12 @@ func (teamPassFile *TeamPassFile) ensureMapsExist() {
 		teamPassFile.Groups = make(map[string]TeamPassGroup)
 	}
 
+	for groupName, group := range teamPassFile.Groups {
+		if group.Values == nil {
+			group.Values = make(map[string]string)
+			teamPassFile.Groups[groupName] = group
+		}
+	}
 }
 
 func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err error) {

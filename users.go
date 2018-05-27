@@ -20,18 +20,18 @@ var listUsersCommand *kingpin.CmdClause
 func setupUsersCommand(app *kingpin.Application) {
 	usersCommand = app.Command("users", "Manage users")
 
-	userName = userCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
-	userKeyFile = userCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
+	userName = usersCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
+	userKeyFile = usersCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
 
-	addUserCommand = userCommand.Command("list", "List users")
+	addUserCommand = usersCommand.Command("list", "List users")
 
-	addUserCommand = userCommand.Command("add", "Add a user")
+	addUserCommand = usersCommand.Command("add", "Add a user")
 
-	removeUserCommand = userCommand.Command("remove", "Remove a user")
+	removeUserCommand = usersCommand.Command("remove", "Remove a user")
 }
 
-func handleUserCommand(commands []string) error {
-	if len(commands) < 1 {
+func handleUsersCommand(commands []string) error {
+	if len(commands) < 2 {
 		return errors.New("No subcommand found for users command")
 	}
 

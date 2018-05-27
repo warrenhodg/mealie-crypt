@@ -30,6 +30,7 @@ func main() {
 	setupFileCommand(app)
 	setupUsersCommand(app)
 	setupGroupsCommand(app)
+	setupValuesCommand(app)
 
 	err := func() error {
 		fullCommand, err := app.Parse(os.Args[1:])
@@ -51,6 +52,9 @@ func main() {
 
 		case "groups":
 			return handleGroupsCommand(commands)
+
+		case "values":
+			return handleValuesCommand(commands)
 		}
 
 		return nil
