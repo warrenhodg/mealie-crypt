@@ -32,7 +32,7 @@ func setupGroupsCommand(app *kingpin.Application) {
 
 func handleGroupCommand(commands []string) error {
 	if len(commands) < 1 {
-		return errors.New("No subcommand found for group command")
+		return errors.New("No subcommand found for groups command")
 	}
 
 	switch commands[1] {
@@ -43,7 +43,7 @@ func handleGroupCommand(commands []string) error {
 	case "remove":
 		return handleRemoveGroupCommand(commands)
 	default:
-		return errors.New(fmt.Sprintf("Group subcommand not supported : %s", commands[1]))
+		return errors.New(fmt.Sprintf("Groups subcommand not supported : %s", commands[1]))
 	}
 }
 

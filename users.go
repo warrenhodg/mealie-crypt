@@ -32,7 +32,7 @@ func setupUsersCommand(app *kingpin.Application) {
 
 func handleUserCommand(commands []string) error {
 	if len(commands) < 1 {
-		return errors.New("No subcommand found for user command")
+		return errors.New("No subcommand found for users command")
 	}
 
 	switch commands[1] {
@@ -43,7 +43,7 @@ func handleUserCommand(commands []string) error {
 	case "remove":
 		return handleRemoveUserCommand(commands)
 	default:
-		return errors.New(fmt.Sprintf("User subcommand not supported : %s", commands[1]))
+		return errors.New(fmt.Sprintf("Users subcommand not supported : %s", commands[1]))
 	}
 }
 
