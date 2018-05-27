@@ -14,7 +14,6 @@ var listGroupsCommand *kingpin.CmdClause
 var addGroupCommand *kingpin.CmdClause
 var groupName *string
 var groupUserNames *[]string
-var groupSymKeyLenBits *int
 
 var removeGroupCommand *kingpin.CmdClause
 
@@ -22,7 +21,6 @@ func setupGroupCommand(app *kingpin.Application) {
 	groupCommand = app.Command("group", "Add a group to the project")
 
 	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').String()
-	groupSymKeyLenBits = groupCommand.Flag("key-len", "Length of symmetrical encryption key in bits").Short('l').Default("256").Int()
 	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
 
 	listGroupsCommand = groupCommand.Command("list", "List groups in the project")
@@ -85,7 +83,7 @@ func handleAddGroupCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("Group already exists : %s", *groupName))
 	}
 
-	symKey, err := createSymmetricalKey(*groupSymKeyLenBits / 8)
+	symKey, err := createSymmetricalKey()
 	if err != nil {
 		return err
 	}

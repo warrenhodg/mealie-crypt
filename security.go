@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var keyLenBits = 256
+
 func readPublicKey(filename *string) (keyContent string, err error) {
 	cmd := exec.Command("ssh-keygen", "-e", "-f", *filename, "-m", "PKCS8")
 	pubkeyBytes, err := cmd.CombinedOutput()
@@ -20,8 +22,8 @@ func readPublicKey(filename *string) (keyContent string, err error) {
 	return
 }
 
-func createSymmetricalKey(lenBits int) (result string, err error) {
-	lenBytes := lenBits / 8
+func createSymmetricalKey() (result string, err error) {
+	lenBytes := keyLenBits / 8
 	cmd := exec.Command("bash", "-c", fmt.Sprintf("openssl rand %d | base64", lenBytes))
 
 	bytes, err := cmd.CombinedOutput()
