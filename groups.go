@@ -9,6 +9,8 @@ import (
 
 var groupCommand *kingpin.CmdClause
 
+var listGroupsCommand *kingpin.CmdClause
+
 var addGroupCommand *kingpin.CmdClause
 var groupName *string
 var groupUserNames *[]string
@@ -17,9 +19,11 @@ var groupSymKeyLenBits *int
 func setupGroupCommand(app *kingpin.Application) {
 	groupCommand = app.Command("group", "Add a group to the project")
 
-	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Required().String()
+	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').String()
 	groupSymKeyLenBits = groupCommand.Flag("key-len", "Length of symmetrical encryption key in bits").Short('l').Default("256").Int()
 	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
+
+	listGroupsCommand = groupCommand.Command("list", "List groups in the project")
 
 	addGroupCommand = groupCommand.Command("add", "Add a group to the project")
 }
@@ -30,11 +34,26 @@ func handleGroupCommand(commands []string) error {
 	}
 
 	switch commands[1] {
+	case "list":
+		return handleListGroupsCommand(commands)
 	case "add":
 		return handleAddGroupCommand(commands)
 	default:
 		return errors.New(fmt.Sprintf("Group subcommand not supported : %s", commands[1]))
 	}
+}
+
+func handleListGroupsCommand(commands []string) error {
+	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	for groupname, _ := range teamPassFile.Groups {
+		fmt.Printf("%s\n", groupname)
+	}
+
+	return nil
 }
 
 func addEncryptedSymmetricKey(group *TeamPassGroup, symKey string, userName string, publicKey string) error {
