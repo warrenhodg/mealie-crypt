@@ -20,7 +20,7 @@ var removeGroupCommand *kingpin.CmdClause
 func setupGroupCommand(app *kingpin.Application) {
 	groupCommand = app.Command("group", "Add a group to the project")
 
-	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').String()
+	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
 	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
 
 	listGroupsCommand = groupCommand.Command("list", "List groups in the project")
