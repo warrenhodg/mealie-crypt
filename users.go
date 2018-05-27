@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var userCommand *kingpin.CmdClause
+var usersCommand *kingpin.CmdClause
 
 var addUserCommand *kingpin.CmdClause
 var userName *string
@@ -18,7 +18,7 @@ var removeUserCommand *kingpin.CmdClause
 var listUsersCommand *kingpin.CmdClause
 
 func setupUserCommand(app *kingpin.Application) {
-	userCommand = app.Command("user", "Manage users")
+	usersCommand = app.Command("users", "Manage users")
 
 	userName = userCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
 	userKeyFile = userCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
