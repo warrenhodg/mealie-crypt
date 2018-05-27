@@ -16,6 +16,8 @@ var groupName *string
 var groupUserNames *[]string
 var groupSymKeyLenBits *int
 
+var removeGroupCommand *kingpin.CmdClause
+
 func setupGroupCommand(app *kingpin.Application) {
 	groupCommand = app.Command("group", "Add a group to the project")
 
@@ -26,6 +28,8 @@ func setupGroupCommand(app *kingpin.Application) {
 	listGroupsCommand = groupCommand.Command("list", "List groups in the project")
 
 	addGroupCommand = groupCommand.Command("add", "Add a group to the project")
+
+	removeGroupCommand = groupCommand.Command("remove", "Remove a group from the project")
 }
 
 func handleGroupCommand(commands []string) error {
@@ -38,6 +42,8 @@ func handleGroupCommand(commands []string) error {
 		return handleListGroupsCommand(commands)
 	case "add":
 		return handleAddGroupCommand(commands)
+	case "remove":
+		return handleRemoveGroupCommand(commands)
 	default:
 		return errors.New(fmt.Sprintf("Group subcommand not supported : %s", commands[1]))
 	}
@@ -100,6 +106,18 @@ func handleAddGroupCommand(commands []string) error {
 	}
 
 	teamPassFile.Groups[*groupName] = group
+
+	return writeFile(filename, false, teamPassFile)
+}
+
+func handleRemoveGroupCommand(commands []string) error {
+	teamPassFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	//Remove group from groups
+	delete(teamPassFile.Groups, *groupName)
 
 	return writeFile(filename, false, teamPassFile)
 }
