@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var groupCommand *kingpin.CmdClause
+var groupsCommand *kingpin.CmdClause
 
 var listGroupsCommand *kingpin.CmdClause
 
@@ -17,8 +17,8 @@ var groupUserNames *[]string
 
 var removeGroupCommand *kingpin.CmdClause
 
-func setupGroupCommand(app *kingpin.Application) {
-	groupCommand = app.Command("group", "Manage groups")
+func setupGroupsCommand(app *kingpin.Application) {
+	groupsCommand = app.Command("groups", "Manage groups")
 
 	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
 	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()

@@ -17,7 +17,7 @@ var removeUserCommand *kingpin.CmdClause
 
 var listUsersCommand *kingpin.CmdClause
 
-func setupUserCommand(app *kingpin.Application) {
+func setupUsersCommand(app *kingpin.Application) {
 	usersCommand = app.Command("users", "Manage users")
 
 	userName = userCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()

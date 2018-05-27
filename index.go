@@ -28,8 +28,8 @@ func main() {
 	addGlobalFlags(app)
 	setupLicenseCommand(app)
 	setupFileCommand(app)
-	setupUserCommand(app)
-	setupGroupCommand(app)
+	setupUsersCommand(app)
+	setupGroupsCommand(app)
 
 	err := func() error {
 		fullCommand, err := app.Parse(os.Args[1:])
@@ -46,11 +46,11 @@ func main() {
 		case "file":
 			return handleFileCommand(commands)
 
-		case "user":
-			return handleUserCommand(commands)
+		case "users":
+			return handleUsersCommand(commands)
 
-		case "group":
-			return handleGroupCommand(commands)
+		case "groups":
+			return handleGroupsCommand(commands)
 		}
 
 		return nil
