@@ -4,19 +4,22 @@ import (
 	"errors"
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
+	"os"
 )
 
 var groupCommand *kingpin.CmdClause
 
 var addGroupCommand *kingpin.CmdClause
 var groupName *string
-var groupKeyLen *int
+var groupUserNames *[]string
+var groupSymKeyLenBits *int
 
 func setupGroupCommand(app *kingpin.Application) {
 	groupCommand = app.Command("group", "Add a group to the project")
 
-	groupName = groupCommand.Flag("name", "Name of group").Short('n').Required().String()
-	groupKeyLen = groupCommand.Flag("key-len", "Length of encryption key").Short('l').Default("32").Int()
+	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Required().String()
+	groupSymKeyLenBits = groupCommand.Flag("key-len", "Length of symmetrical encryption key in bits").Short('l').Default("256").Int()
+	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
 
 	addGroupCommand = groupCommand.Command("add", "Add a group to the project")
 }
@@ -34,6 +37,16 @@ func handleGroupCommand(commands []string) error {
 	}
 }
 
+func addEncryptedSymmetricKey(group *TeamPassGroup, symKey string, userName string, publicKey string) error {
+	encSymKey, err := encryptSymmetricalKey(symKey, publicKey)
+	if err != nil {
+		return err
+	}
+
+	group.Keys[userName] = encSymKey
+	return nil
+}
+
 func handleAddGroupCommand(commands []string) error {
 	var group TeamPassGroup
 
@@ -47,13 +60,25 @@ func handleAddGroupCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("Group already exists : %s", *groupName))
 	}
 
-	key, err := CreateKey(*groupKeyLen)
+	symKey, err := createSymmetricalKey(*groupSymKeyLenBits / 8)
 	if err != nil {
 		return err
 	}
 
+	//Create a key for each user in the list
 	group.Keys = make(map[string]string)
-	group.Keys[*groupName] = string(key)
+	for i := 0; i < len(*groupUserNames); i++ {
+		username := (*groupUserNames)[i]
+		user, found := teamPassFile.Users[username]
+		if !found {
+			return errors.New(fmt.Sprintf("User was not found : %s", username))
+		}
+
+		err = addEncryptedSymmetricKey(&group, symKey, username, user.PublicKey)
+		if err != nil {
+			return err
+		}
+	}
 
 	teamPassFile.Groups[*groupName] = group
 
