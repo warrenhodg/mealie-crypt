@@ -98,6 +98,9 @@ func handleRemoveUserCommand(commands []string) error {
 	//Remove user from groups
 	for groupName, _ := range teamPassFile.Groups {
 		delete(teamPassFile.Groups[groupName].Keys, *userName)
+		if len(teamPassFile.Groups[groupName].Keys) == 0 {
+			return errors.New(fmt.Sprintf("Cannot remove last user from group : %s", groupName))
+		}
 	}
 
 	return writeFile(filename, false, teamPassFile)
