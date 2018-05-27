@@ -17,10 +17,19 @@
   revision = "2efee857e7cfd4f3d0138cc3cbb1b4966962b93a"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/ianmcmahon/encoding_ssh"
-  packages = ["."]
-  revision = "dda221cd386dd550912f2ea7c18c2ce1e39605a2"
+  name = "github.com/gobwas/glob"
+  packages = [
+    ".",
+    "compiler",
+    "match",
+    "syntax",
+    "syntax/ast",
+    "syntax/lexer",
+    "util/runes",
+    "util/strings"
+  ]
+  revision = "5ccd90ef52e1e632236f7326478d4faa74f99438"
+  version = "v0.2.3"
 
 [[projects]]
   branch = "master"
@@ -43,6 +52,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3027056abb4d32fe000480c800536d455b8bd996acafffc148c3a67764054dce"
+  inputs-digest = "b339b18639a882659ef2d71476cbad2f146998e6c97ceb37de96218e80401fa2"
   solver-name = "gps-cdcl"
   solver-version = 1
