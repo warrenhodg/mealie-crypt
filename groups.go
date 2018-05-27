@@ -18,16 +18,16 @@ var groupUserNames *[]string
 var removeGroupCommand *kingpin.CmdClause
 
 func setupGroupCommand(app *kingpin.Application) {
-	groupCommand = app.Command("group", "Add a group to the project")
+	groupCommand = app.Command("group", "Manage groups")
 
 	groupName = groupCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
 	groupUserNames = groupCommand.Flag("users", "Names of users").Short('u').Default(os.Getenv("USER")).Strings()
 
-	listGroupsCommand = groupCommand.Command("list", "List groups in the project")
+	listGroupsCommand = groupCommand.Command("list", "List groups")
 
-	addGroupCommand = groupCommand.Command("add", "Add a group to the project")
+	addGroupCommand = groupCommand.Command("add", "Add a group")
 
-	removeGroupCommand = groupCommand.Command("remove", "Remove a group from the project")
+	removeGroupCommand = groupCommand.Command("remove", "Remove a group")
 }
 
 func handleGroupCommand(commands []string) error {
