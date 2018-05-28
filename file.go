@@ -7,7 +7,7 @@ import (
 )
 
 func setupFileCommand(app *kingpin.Application) {
-	fileCommand := app.Command("init-file", "Initialize a new empty file")
+	fileCommand := app.Command("file", "Initialize a new empty file")
 
 	fileCommand.Command("init", "Initialize a new empty file").Default().Default()
 }
