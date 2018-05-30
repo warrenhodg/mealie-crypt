@@ -6,6 +6,7 @@ import (
 	"github.com/gobwas/glob"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
+	"path/filepath"
 )
 
 var valuesCommand *kingpin.CmdClause
@@ -23,7 +24,7 @@ func setupValuesCommand(app *kingpin.Application) {
 
 	valuesGroup = valuesCommand.Flag("group", "Name of group").Short('g').Default("_").String()
 	valuesUsername = valuesCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
-	valuesPrivateKeyFile = valuesCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa").String()
+	valuesPrivateKeyFile = valuesCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")).String()
 	valuesName = valuesCommand.Flag("name", "Name of value").Short('n').String()
 	valuesValue = valuesCommand.Flag("value", "Value").Short('v').String()
 

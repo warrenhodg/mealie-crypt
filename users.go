@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
+	"path/filepath"
 )
 
 var usersCommand *kingpin.CmdClause
@@ -21,7 +22,7 @@ func setupUsersCommand(app *kingpin.Application) {
 	usersCommand = app.Command("users", "Manage users")
 
 	userName = usersCommand.Flag("name", "Name of user").Short('u').Default(os.Getenv("USER")).String()
-	userKeyFile = usersCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa.pub").String()
+	userKeyFile = usersCommand.Flag("key-file", "Filename of user's public key").Short('k').Default(filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub")).String()
 
 	addUserCommand = usersCommand.Command("list", "List users")
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
+	"path/filepath"
 )
 
 var groupsCommand *kingpin.CmdClause
@@ -35,7 +36,7 @@ func setupGroupsCommand(app *kingpin.Application) {
 
 	groupAddUserCommand = groupsCommand.Command("add-user", "Add user to group")
 	groupsUsername = groupsCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
-	groupsPrivateKeyFile = groupsCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(os.Getenv("HOME") + "/.ssh/id_rsa").String()
+	groupsPrivateKeyFile = groupsCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")).String()
 }
 
 func handleGroupsCommand(commands []string) error {
