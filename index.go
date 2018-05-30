@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var appName = "teampass"
+var appName = "dioscorea"
 var appDescription = "Utility for teams to manage sensitive information"
 var version = "1.0.0"
 var copyrightYear = 2018
@@ -17,7 +17,7 @@ var filename *string
 var comment *string
 
 func addGlobalFlags(app *kingpin.Application) {
-	filename = app.Flag("file", "Name of file to manage").Short('f').Default("teampass.yaml").String()
+	filename = app.Flag("file", "Name of file to manage").Short('f').Default("dioscorea.yaml").String()
 	comment = app.Flag("comment", "A comment").Short('c').String()
 }
 

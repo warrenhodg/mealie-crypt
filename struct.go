@@ -9,44 +9,44 @@ import (
 	"regexp"
 )
 
-type TeamPassFile struct {
-	Comment string                   `yaml:"comment,omitempty"`
-	Users   map[string]TeamPassUser  `yaml:"users,omitempty"`
-	Groups  map[string]TeamPassGroup `yaml:"groups,omitempty"`
+type DioscoreaFile struct {
+	Comment string                    `yaml:"comment,omitempty"`
+	Users   map[string]DioscoreaUser  `yaml:"users,omitempty"`
+	Groups  map[string]DioscoreaGroup `yaml:"groups,omitempty"`
 }
 
-type TeamPassUser struct {
+type DioscoreaUser struct {
 	PublicKey string `yaml:"public_key"`
 	Comment   string `yaml:"comment,omitempty"`
 }
 
-type TeamPassGroup struct {
+type DioscoreaGroup struct {
 	Keys      map[string]string `yaml:"keys"`
 	Values    map[string]string `yaml:"values"`
 	Decrypted map[string]string `yaml:"decrypted,omitempty"`
 }
 
-func (teamPassFile *TeamPassFile) ensureMapsExist() {
-	if teamPassFile.Users == nil {
-		teamPassFile.Users = make(map[string]TeamPassUser)
+func (dioscoreaFile *DioscoreaFile) ensureMapsExist() {
+	if dioscoreaFile.Users == nil {
+		dioscoreaFile.Users = make(map[string]DioscoreaUser)
 	}
 
-	if teamPassFile.Groups == nil {
-		teamPassFile.Groups = make(map[string]TeamPassGroup)
+	if dioscoreaFile.Groups == nil {
+		dioscoreaFile.Groups = make(map[string]DioscoreaGroup)
 	}
 
-	for groupName, group := range teamPassFile.Groups {
+	for groupName, group := range dioscoreaFile.Groups {
 		if group.Values == nil {
 			group.Values = make(map[string]string)
-			teamPassFile.Groups[groupName] = group
+			dioscoreaFile.Groups[groupName] = group
 		}
 	}
 }
 
-func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err error) {
+func readFile(filename *string, mustExist bool) (dioscoreaFile DioscoreaFile, err error) {
 	var file *os.File
 
-	defer teamPassFile.ensureMapsExist()
+	defer dioscoreaFile.ensureMapsExist()
 
 	_, err = os.Stat(*filename)
 	if os.IsNotExist(err) {
@@ -78,7 +78,7 @@ func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err 
 		return
 	}
 
-	err = yaml.Unmarshal(bytes, &teamPassFile)
+	err = yaml.Unmarshal(bytes, &dioscoreaFile)
 	if err != nil {
 		return
 	}
@@ -86,7 +86,7 @@ func readFile(filename *string, mustExist bool) (teamPassFile TeamPassFile, err 
 	return
 }
 
-func writeFile(filename *string, mustNotExist bool, teamPassFile TeamPassFile) (err error) {
+func writeFile(filename *string, mustNotExist bool, dioscoreaFile DioscoreaFile) (err error) {
 	var file *os.File
 
 	if *filename == "-" {
@@ -108,7 +108,7 @@ func writeFile(filename *string, mustNotExist bool, teamPassFile TeamPassFile) (
 
 	defer file.Close()
 
-	bytes, err := yaml.Marshal(teamPassFile)
+	bytes, err := yaml.Marshal(dioscoreaFile)
 	if err != nil {
 		return err
 	}

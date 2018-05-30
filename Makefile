@@ -1,14 +1,14 @@
-teampass: windows linux mac
-windows: teampass.exe
-linux: teampass.linux
-mac: teampass.mac
+dioscorea: windows linux mac
+windows: dioscorea.exe
+linux: dioscorea.linux
+mac: dioscorea.mac
 
-teampass.exe: *.go
-	GOOS=windows GOARCH=386 go build -o teampass.exe .
-teampass.linux: *.go
-	GOOS=linux GOARCH=386 go build -o teampass.linux .
-teampass.mac: *.go
-	GOOS=darwin GOARCH=386 go build -o teampass.mac .
+dioscorea.exe: *.go
+	GOOS=windows GOARCH=386 go build -o dioscorea.exe .
+dioscorea.linux: *.go
+	GOOS=linux GOARCH=386 go build -o dioscorea.linux .
+dioscorea.mac: *.go
+	GOOS=darwin GOARCH=386 go build -o dioscorea.mac .
 
 clean:
-	rm -f teampass.exe teampass.linux teampass.mac
+	rm -f dioscorea.exe dioscorea.linux dioscorea.mac

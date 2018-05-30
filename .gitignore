@@ -1,7 +1,7 @@
-teampass.exe
-teampass.linux
-teampass.mac
+dioscorea.exe
+dioscorea.linux
+dioscorea.mac
 ~*
 *.bak
-teampass.yaml
+dioscorea.yaml
 vendor

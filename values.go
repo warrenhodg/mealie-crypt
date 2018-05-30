@@ -55,14 +55,14 @@ func handleValuesCommand(commands []string) error {
 }
 
 func handleListValuesCommand(commands []string) error {
-	var group TeamPassGroup
+	var group DioscoreaGroup
 
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	group, found := teamPassFile.Groups[*valuesGroup]
+	group, found := dioscoreaFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
 	}
@@ -75,17 +75,17 @@ func handleListValuesCommand(commands []string) error {
 }
 
 func handleGetValueCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := teamPassFile.Users[*valuesUsername]
+	_, found := dioscoreaFile.Users[*valuesUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *valuesUsername))
 	}
 
-	group, found := teamPassFile.Groups[*valuesGroup]
+	group, found := dioscoreaFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", *valuesGroup))
 	}
@@ -124,17 +124,17 @@ func handleGetValueCommand(commands []string) error {
 }
 
 func handleSetValueCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := teamPassFile.Users[*valuesUsername]
+	_, found := dioscoreaFile.Users[*valuesUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", valuesUsername))
 	}
 
-	group, found := teamPassFile.Groups[*valuesGroup]
+	group, found := dioscoreaFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
 	}
@@ -156,7 +156,7 @@ func handleSetValueCommand(commands []string) error {
 
 	group.Values[*valuesName] = encValue
 
-	teamPassFile.Groups[*valuesGroup] = group
+	dioscoreaFile.Groups[*valuesGroup] = group
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }

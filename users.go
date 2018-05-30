@@ -49,12 +49,12 @@ func handleUsersCommand(commands []string) error {
 }
 
 func handleListUsersCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	for username, _ := range teamPassFile.Users {
+	for username, _ := range dioscoreaFile.Users {
 		fmt.Printf("%s\n", username)
 	}
 
@@ -66,9 +66,9 @@ func checkUsername() error {
 }
 
 func handleAddUserCommand(commands []string) error {
-	var user TeamPassUser
+	var user DioscoreaUser
 
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func handleAddUserCommand(commands []string) error {
 		return err
 	}
 
-	_, found := teamPassFile.Users[*userName]
+	_, found := dioscoreaFile.Users[*userName]
 	if found {
 		return errors.New(fmt.Sprintf("User already exists : %s", *userName))
 	}
@@ -91,13 +91,13 @@ func handleAddUserCommand(commands []string) error {
 	user.PublicKey = keyValue
 	user.Comment = *comment
 
-	teamPassFile.Users[*userName] = user
+	dioscoreaFile.Users[*userName] = user
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }
 
 func handleRemoveUserCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -108,15 +108,15 @@ func handleRemoveUserCommand(commands []string) error {
 	}
 
 	//Remove user from users
-	delete(teamPassFile.Users, *userName)
+	delete(dioscoreaFile.Users, *userName)
 
 	//Remove user from groups
-	for groupName, _ := range teamPassFile.Groups {
-		delete(teamPassFile.Groups[groupName].Keys, *userName)
-		if len(teamPassFile.Groups[groupName].Keys) == 0 {
+	for groupName, _ := range dioscoreaFile.Groups {
+		delete(dioscoreaFile.Groups[groupName].Keys, *userName)
+		if len(dioscoreaFile.Groups[groupName].Keys) == 0 {
 			return errors.New(fmt.Sprintf("Cannot remove last user from group : %s", groupName))
 		}
 	}
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }

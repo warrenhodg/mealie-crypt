@@ -71,19 +71,19 @@ func checkGroupsUsername() error {
 }
 
 func handleListGroupsCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	for groupname, _ := range teamPassFile.Groups {
+	for groupname, _ := range dioscoreaFile.Groups {
 		fmt.Printf("%s\n", groupname)
 	}
 
 	return nil
 }
 
-func addEncryptedSymmetricKey(group *TeamPassGroup, symKey string, userName string, publicKey string) error {
+func addEncryptedSymmetricKey(group *DioscoreaGroup, symKey string, userName string, publicKey string) error {
 	encSymKey, err := encryptSymmetricalKey(symKey, publicKey)
 	if err != nil {
 		return err
@@ -94,9 +94,9 @@ func addEncryptedSymmetricKey(group *TeamPassGroup, symKey string, userName stri
 }
 
 func handleAddGroupCommand(commands []string) error {
-	var group TeamPassGroup
+	var group DioscoreaGroup
 
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func handleAddGroupCommand(commands []string) error {
 		return err
 	}
 
-	_, found := teamPassFile.Groups[*groupName]
+	_, found := dioscoreaFile.Groups[*groupName]
 	if found {
 		return errors.New(fmt.Sprintf("Group already exists : %s", *groupName))
 	}
@@ -120,7 +120,7 @@ func handleAddGroupCommand(commands []string) error {
 	group.Keys = make(map[string]string)
 	for i := 0; i < len(*groupUserNames); i++ {
 		username := (*groupUserNames)[i]
-		user, found := teamPassFile.Users[username]
+		user, found := dioscoreaFile.Users[username]
 		if !found {
 			return errors.New(fmt.Sprintf("User was not found : %s", username))
 		}
@@ -131,13 +131,13 @@ func handleAddGroupCommand(commands []string) error {
 		}
 	}
 
-	teamPassFile.Groups[*groupName] = group
+	dioscoreaFile.Groups[*groupName] = group
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }
 
 func handleRemoveGroupCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -148,13 +148,13 @@ func handleRemoveGroupCommand(commands []string) error {
 	}
 
 	//Remove group from groups
-	delete(teamPassFile.Groups, *groupName)
+	delete(dioscoreaFile.Groups, *groupName)
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }
 
 func handleGroupAddUserCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		return err
 	}
 
-	_, found := teamPassFile.Users[*groupsUsername]
+	_, found := dioscoreaFile.Users[*groupsUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *groupsUsername))
 	}
@@ -174,7 +174,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		return err
 	}
 
-	group, found := teamPassFile.Groups[*groupName]
+	group, found := dioscoreaFile.Groups[*groupName]
 	if !found {
 		return errors.New(fmt.Sprintf("Group does not exist : %s", *groupName))
 	}
@@ -191,7 +191,7 @@ func handleGroupAddUserCommand(commands []string) error {
 
 	for i := 0; i < len(*groupUserNames); i++ {
 		username := (*groupUserNames)[i]
-		user, found := teamPassFile.Users[username]
+		user, found := dioscoreaFile.Users[username]
 		if !found {
 			return errors.New(fmt.Sprintf("User was not found : %s", username))
 		}
@@ -205,7 +205,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		}
 	}
 
-	teamPassFile.Groups[*groupName] = group
+	dioscoreaFile.Groups[*groupName] = group
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }

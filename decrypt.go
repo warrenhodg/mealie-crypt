@@ -20,17 +20,17 @@ func setupDecryptCommand(app *kingpin.Application) {
 }
 
 func handleDecryptCommand(commands []string) error {
-	teamPassFile, err := readFile(filename, true)
+	dioscoreaFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := teamPassFile.Users[*decryptUsername]
+	_, found := dioscoreaFile.Users[*decryptUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *decryptUsername))
 	}
 
-	for groupName, group := range teamPassFile.Groups {
+	for groupName, group := range dioscoreaFile.Groups {
 		encSymKey, found := group.Keys[*decryptUsername]
 		if found {
 			if group.Decrypted == nil {
@@ -54,9 +54,9 @@ func handleDecryptCommand(commands []string) error {
 				}
 			}
 
-			teamPassFile.Groups[groupName] = group
+			dioscoreaFile.Groups[groupName] = group
 		}
 	}
 
-	return writeFile(filename, false, teamPassFile)
+	return writeFile(filename, false, dioscoreaFile)
 }

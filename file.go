@@ -26,9 +26,9 @@ func handleFileCommand(commands []string) error {
 }
 
 func handleInitFileCommand(commands []string) error {
-	var teamPassFile TeamPassFile
+	var dioscoreaFile DioscoreaFile
 
-	teamPassFile.Comment = *comment
+	dioscoreaFile.Comment = *comment
 
-	return writeFile(filename, true, teamPassFile)
+	return writeFile(filename, true, dioscoreaFile)
 }
