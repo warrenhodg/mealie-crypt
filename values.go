@@ -81,12 +81,12 @@ func handleGetValueCommand(commands []string) error {
 
 	_, found := teamPassFile.Users[*valuesUsername]
 	if !found {
-		return errors.New(fmt.Sprintf("User not found : %s", valuesUsername))
+		return errors.New(fmt.Sprintf("User not found : %s", *valuesUsername))
 	}
 
 	group, found := teamPassFile.Groups[*valuesGroup]
 	if !found {
-		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
+		return errors.New(fmt.Sprintf("Group not found : %s", *valuesGroup))
 	}
 
 	encSymKey, found := group.Keys[*valuesUsername]

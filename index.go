@@ -32,6 +32,7 @@ func main() {
 	setupGroupsCommand(app)
 	setupValuesCommand(app)
 	setupDecryptCommand(app)
+	setupEncryptCommand(app)
 
 	err := func() error {
 		fullCommand, err := app.Parse(os.Args[1:])
@@ -44,6 +45,9 @@ func main() {
 		switch commands[0] {
 		case "decrypt":
 			return handleDecryptCommand(commands)
+
+		case "encrypt":
+			return handleEncryptCommand(commands)
 
 		case "file":
 			return handleFileCommand(commands)

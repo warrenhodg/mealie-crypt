@@ -10,20 +10,20 @@ import (
 )
 
 type TeamPassFile struct {
-	Comment string                   `yaml:"comment"`
-	Users   map[string]TeamPassUser  `yaml:"users"`
-	Groups  map[string]TeamPassGroup `yaml:"groups"`
+	Comment string                   `yaml:"comment,omitempty"`
+	Users   map[string]TeamPassUser  `yaml:"users,omitempty"`
+	Groups  map[string]TeamPassGroup `yaml:"groups,omitempty"`
 }
 
 type TeamPassUser struct {
 	PublicKey string `yaml:"public_key"`
-	Comment   string `yaml:"comment"`
+	Comment   string `yaml:"comment,omitempty"`
 }
 
 type TeamPassGroup struct {
 	Keys      map[string]string `yaml:"keys"`
 	Values    map[string]string `yaml:"values"`
-	Decrypted map[string]string `yaml:"decrypted"`
+	Decrypted map[string]string `yaml:"decrypted,omitempty"`
 }
 
 func (teamPassFile *TeamPassFile) ensureMapsExist() {
