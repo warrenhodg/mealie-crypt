@@ -2,9 +2,13 @@ package main
 
 import (
 	"crypto/rand"
+	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"errors"
 	"fmt"
+	encoding_ssh "github.com/ianmcmahon/encoding_ssh"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -13,15 +17,27 @@ import (
 var keyLenBits = 256
 
 func readPublicKey(filename *string) (keyContent string, err error) {
-	cmd := exec.Command("ssh-keygen", "-e", "-f", *filename, "-m", "PKCS8")
-	cmd.Env = os.Environ()
-	pubkeyBytes, err := cmd.CombinedOutput()
+	pubKeyBytes, err := ioutil.ReadFile(*filename)
 	if err != nil {
-		err = errors.New(fmt.Sprintf("%s : %s", err.Error(), string(pubkeyBytes)))
 		return
 	}
 
-	keyContent = string(pubkeyBytes)
+	pubKey, err := encoding_ssh.DecodePublicKey(string(pubKeyBytes))
+	if err != nil {
+		return
+	}
+
+	derBytes, err := x509.MarshalPKIXPublicKey(pubKey)
+	if err != nil {
+		return
+	}
+
+	pubKeyPem := string(pem.EncodeToMemory(&pem.Block{
+		Type:  "RSA PUBLIC KEY",
+		Bytes: derBytes,
+	}))
+
+	keyContent = string(pubKeyPem)
 	return
 }
 
