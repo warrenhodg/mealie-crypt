@@ -31,6 +31,7 @@ func main() {
 	setupUsersCommand(app)
 	setupGroupsCommand(app)
 	setupValuesCommand(app)
+	setupDecryptCommand(app)
 
 	err := func() error {
 		fullCommand, err := app.Parse(os.Args[1:])
@@ -41,17 +42,20 @@ func main() {
 		commands := strings.Split(fullCommand, " ")
 
 		switch commands[0] {
-		case "license":
-			return handleLicenseCommand(commands)
+		case "decrypt":
+			return handleDecryptCommand(commands)
 
 		case "file":
 			return handleFileCommand(commands)
 
-		case "users":
-			return handleUsersCommand(commands)
-
 		case "groups":
 			return handleGroupsCommand(commands)
+
+		case "license":
+			return handleLicenseCommand(commands)
+
+		case "users":
+			return handleUsersCommand(commands)
 
 		case "values":
 			return handleValuesCommand(commands)

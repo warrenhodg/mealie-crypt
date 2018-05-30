@@ -21,8 +21,9 @@ type TeamPassUser struct {
 }
 
 type TeamPassGroup struct {
-	Keys   map[string]string `yaml:"keys"`
-	Values map[string]string `yaml:"values"`
+	Keys      map[string]string `yaml:"keys"`
+	Values    map[string]string `yaml:"values"`
+	Decrypted map[string]string `yaml:"decrypted"`
 }
 
 func (teamPassFile *TeamPassFile) ensureMapsExist() {
