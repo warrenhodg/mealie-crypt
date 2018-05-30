@@ -33,9 +33,30 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/ianmcmahon/encoding_ssh"
+  packages = ["."]
+  revision = "dda221cd386dd550912f2ea7c18c2ce1e39605a2"
+
+[[projects]]
+  branch = "master"
   name = "github.com/warrenhodg/go_licenses"
   packages = ["."]
   revision = "28921be450f4deed967fe4690b8843a3a97e2893"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "ab813273cd59e1333f7ae7bff5d027d4aadf528c"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "c11f84a56e43e20a78cee75a7c034031ecf57d1f"
 
 [[projects]]
   name = "gopkg.in/alecthomas/kingpin.v2"
@@ -52,6 +73,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b339b18639a882659ef2d71476cbad2f146998e6c97ceb37de96218e80401fa2"
+  inputs-digest = "b745b428dd5aab4a53d547534aff2f21a49c430eff7aaf238379409de809e532"
   solver-name = "gps-cdcl"
   solver-version = 1
