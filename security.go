@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -25,16 +27,14 @@ func readPublicKey(filename *string) (keyContent string, err error) {
 
 func createSymmetricalKey() (result string, err error) {
 	lenBytes := keyLenBits / 8
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("openssl rand %d | base64", lenBytes))
-	cmd.Env = os.Environ()
-
-	bytes, err := cmd.CombinedOutput()
+	bytes := make([]byte, lenBytes)
+	_, err = rand.Read(bytes)
 	if err != nil {
-		err = errors.New(fmt.Sprintf("%s : %s", err.Error(), string(bytes)))
 		return
 	}
 
-	return string(bytes), nil
+	result = base64.StdEncoding.EncodeToString(bytes)
+	return
 }
 
 func encryptSymmetricalKey(symKey string, publicKey string) (encSymKey string, err error) {
