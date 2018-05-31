@@ -20,17 +20,17 @@ func setupEncryptCommand(app *kingpin.Application) {
 }
 
 func handleEncryptCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := dioscoreaFile.Users[*encryptUsername]
+	_, found := mealieCryptFile.Users[*encryptUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *encryptUsername))
 	}
 
-	for groupName, group := range dioscoreaFile.Groups {
+	for groupName, group := range mealieCryptFile.Groups {
 		encSymKey, found := group.Keys[*encryptUsername]
 		if found {
 			if group.Decrypted == nil {
@@ -69,7 +69,7 @@ func handleEncryptCommand(commands []string) error {
 
 			group.Decrypted = nil
 
-			dioscoreaFile.Groups[groupName] = group
+			mealieCryptFile.Groups[groupName] = group
 		} else {
 			if group.Decrypted != nil {
 				if len(group.Decrypted) > 0 {
@@ -77,11 +77,11 @@ func handleEncryptCommand(commands []string) error {
 				} else {
 					group.Decrypted = nil
 
-					dioscoreaFile.Groups[groupName] = group
+					mealieCryptFile.Groups[groupName] = group
 				}
 			}
 		}
 	}
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }

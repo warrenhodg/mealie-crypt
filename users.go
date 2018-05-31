@@ -49,12 +49,12 @@ func handleUsersCommand(commands []string) error {
 }
 
 func handleListUsersCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	for username, _ := range dioscoreaFile.Users {
+	for username, _ := range mealieCryptFile.Users {
 		fmt.Printf("%s\n", username)
 	}
 
@@ -66,9 +66,9 @@ func checkUsername() error {
 }
 
 func handleAddUserCommand(commands []string) error {
-	var user DioscoreaUser
+	var user MealieCryptUser
 
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func handleAddUserCommand(commands []string) error {
 		return err
 	}
 
-	_, found := dioscoreaFile.Users[*userName]
+	_, found := mealieCryptFile.Users[*userName]
 	if found {
 		return errors.New(fmt.Sprintf("User already exists : %s", *userName))
 	}
@@ -91,13 +91,13 @@ func handleAddUserCommand(commands []string) error {
 	user.PublicKey = keyValue
 	user.Comment = *comment
 
-	dioscoreaFile.Users[*userName] = user
+	mealieCryptFile.Users[*userName] = user
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }
 
 func handleRemoveUserCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -108,15 +108,15 @@ func handleRemoveUserCommand(commands []string) error {
 	}
 
 	//Remove user from users
-	delete(dioscoreaFile.Users, *userName)
+	delete(mealieCryptFile.Users, *userName)
 
 	//Remove user from groups
-	for groupName, _ := range dioscoreaFile.Groups {
-		delete(dioscoreaFile.Groups[groupName].Keys, *userName)
-		if len(dioscoreaFile.Groups[groupName].Keys) == 0 {
+	for groupName, _ := range mealieCryptFile.Groups {
+		delete(mealieCryptFile.Groups[groupName].Keys, *userName)
+		if len(mealieCryptFile.Groups[groupName].Keys) == 0 {
 			return errors.New(fmt.Sprintf("Cannot remove last user from group : %s", groupName))
 		}
 	}
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }

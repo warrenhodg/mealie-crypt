@@ -1,14 +1,52 @@
-dioscorea: windows linux mac
-windows: dioscorea.exe
-linux: dioscorea.linux
-mac: dioscorea.mac
+mealie-crypt: windows linux mac
+windows: mealie-crypt.exe
+linux: mealie-crypt.linux
+mac: mealie-crypt.mac
 
-dioscorea.exe: *.go
-	GOOS=windows GOARCH=386 go build -o dioscorea.exe .
-dioscorea.linux: *.go
-	GOOS=linux GOARCH=386 go build -o dioscorea.linux .
-dioscorea.mac: *.go
-	GOOS=darwin GOARCH=386 go build -o dioscorea.mac .
+help:
+	@echo "Build normally"
+	@echo "\tmake"
+	@echo "Build using docker"
+	@echo "\tUSE_DOCKER=1 make"
+
+PRODUCT=mealie-crypt
+FULL_PRODUCT=github.com/warrenhodg/${PRODUCT}
+GOLANG_DOCKER_IMAGE="golang:1.10"
+GO_SRC=${GOPATH}/src
+DEP=${GOPATH}/bin/dep
+VENDOR=vendor
+
+mealie-crypt.linux: *.go ${VENDOR}
+ifeq (${USE_DOCKER}, 1)
+	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} golang:1.10 make linux
+else
+	GOOS=linux GOARCH=386 go build -o mealie-crypt.linux .
+endif
+
+mealie-crypt.mac: *.go ${VENDOR}
+ifeq (${USE_DOCKER}, 1)
+	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} golang:1.10 make mac
+else
+	GOOS=darwin GOARCH=386 go build -o ${PRODUCT}.mac ${FULL_PRODUCT}
+endif
+
+mealie-crypt.exe: *.go ${VENDOR}
+ifeq (${USE_DOCKER}, 1)
+	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} golang:1.10 make windows
+else
+	GOOS=windows GOARCH=386 go build -o mealie-crypt.exe .
+endif
+
+${VENDOR}: ${DEP}
+ifneq (${USE_DOCKER}, 1)
+	dep ensure
+	chmod 777 vendor
+endif
+
+${DEP}:
+ifneq (${USE_DOCKER}, 1)
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+endif
 
 clean:
-	rm -f dioscorea.exe dioscorea.linux dioscorea.mac
+	rm -f mealie-crypt.exe mealie-crypt.linux mealie-crypt.mac

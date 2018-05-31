@@ -71,19 +71,19 @@ func checkGroupsUsername() error {
 }
 
 func handleListGroupsCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	for groupname, _ := range dioscoreaFile.Groups {
+	for groupname, _ := range mealieCryptFile.Groups {
 		fmt.Printf("%s\n", groupname)
 	}
 
 	return nil
 }
 
-func addEncryptedSymmetricKey(group *DioscoreaGroup, symKey string, userName string, publicKey string) error {
+func addEncryptedSymmetricKey(group *MealieCryptGroup, symKey string, userName string, publicKey string) error {
 	encSymKey, err := encryptSymmetricalKey(symKey, publicKey)
 	if err != nil {
 		return err
@@ -94,9 +94,9 @@ func addEncryptedSymmetricKey(group *DioscoreaGroup, symKey string, userName str
 }
 
 func handleAddGroupCommand(commands []string) error {
-	var group DioscoreaGroup
+	var group MealieCryptGroup
 
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func handleAddGroupCommand(commands []string) error {
 		return err
 	}
 
-	_, found := dioscoreaFile.Groups[*groupName]
+	_, found := mealieCryptFile.Groups[*groupName]
 	if found {
 		return errors.New(fmt.Sprintf("Group already exists : %s", *groupName))
 	}
@@ -120,7 +120,7 @@ func handleAddGroupCommand(commands []string) error {
 	group.Keys = make(map[string]string)
 	for i := 0; i < len(*groupUserNames); i++ {
 		username := (*groupUserNames)[i]
-		user, found := dioscoreaFile.Users[username]
+		user, found := mealieCryptFile.Users[username]
 		if !found {
 			return errors.New(fmt.Sprintf("User was not found : %s", username))
 		}
@@ -131,13 +131,13 @@ func handleAddGroupCommand(commands []string) error {
 		}
 	}
 
-	dioscoreaFile.Groups[*groupName] = group
+	mealieCryptFile.Groups[*groupName] = group
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }
 
 func handleRemoveGroupCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -148,13 +148,13 @@ func handleRemoveGroupCommand(commands []string) error {
 	}
 
 	//Remove group from groups
-	delete(dioscoreaFile.Groups, *groupName)
+	delete(mealieCryptFile.Groups, *groupName)
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }
 
 func handleGroupAddUserCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
@@ -164,7 +164,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		return err
 	}
 
-	_, found := dioscoreaFile.Users[*groupsUsername]
+	_, found := mealieCryptFile.Users[*groupsUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *groupsUsername))
 	}
@@ -174,7 +174,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		return err
 	}
 
-	group, found := dioscoreaFile.Groups[*groupName]
+	group, found := mealieCryptFile.Groups[*groupName]
 	if !found {
 		return errors.New(fmt.Sprintf("Group does not exist : %s", *groupName))
 	}
@@ -191,7 +191,7 @@ func handleGroupAddUserCommand(commands []string) error {
 
 	for i := 0; i < len(*groupUserNames); i++ {
 		username := (*groupUserNames)[i]
-		user, found := dioscoreaFile.Users[username]
+		user, found := mealieCryptFile.Users[username]
 		if !found {
 			return errors.New(fmt.Sprintf("User was not found : %s", username))
 		}
@@ -205,7 +205,7 @@ func handleGroupAddUserCommand(commands []string) error {
 		}
 	}
 
-	dioscoreaFile.Groups[*groupName] = group
+	mealieCryptFile.Groups[*groupName] = group
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }
