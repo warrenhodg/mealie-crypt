@@ -26,7 +26,7 @@ func setupGroupsCommand(app *kingpin.Application) {
 	groupsCommand = app.Command("groups", "Manage groups")
 
 	groupName = groupsCommand.Flag("group-name", "Name of group").Short('g').Default("_").String()
-	groupUserNames = groupsCommand.Flag("users", "Names of users").Short('U').Default(os.Getenv("USER")).Strings()
+	groupUserNames = groupsCommand.Flag("users", "Names of users").Short('U').Default(os.Getenv(userVar)).Strings()
 
 	listGroupsCommand = groupsCommand.Command("list", "List groups")
 
@@ -35,8 +35,8 @@ func setupGroupsCommand(app *kingpin.Application) {
 	removeGroupCommand = groupsCommand.Command("remove", "Remove a group")
 
 	groupAddUserCommand = groupsCommand.Command("add-user", "Add user to group")
-	groupsUsername = groupsCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv("USER")).String()
-	groupsPrivateKeyFile = groupsCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa")).String()
+	groupsUsername = groupsCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv(userVar)).String()
+	groupsPrivateKeyFile = groupsCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(filepath.Join(os.Getenv(homeVar), ".ssh", "id_rsa")).String()
 }
 
 func handleGroupsCommand(commands []string) error {
