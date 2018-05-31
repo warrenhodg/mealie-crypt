@@ -9,7 +9,10 @@ import (
 	"regexp"
 )
 
+var currentFileVersion = 1
+
 type DioscoreaFile struct {
+	Version int                       `yaml:"version"`
 	Comment string                    `yaml:"comment,omitempty"`
 	Users   map[string]DioscoreaUser  `yaml:"users,omitempty"`
 	Groups  map[string]DioscoreaGroup `yaml:"groups,omitempty"`
@@ -88,6 +91,8 @@ func readFile(filename *string, mustExist bool) (dioscoreaFile DioscoreaFile, er
 
 func writeFile(filename *string, mustNotExist bool, dioscoreaFile DioscoreaFile) (err error) {
 	var file *os.File
+
+	dioscoreaFile.Version = currentFileVersion
 
 	if *filename == "-" {
 		file = os.Stdout
