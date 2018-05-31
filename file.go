@@ -9,7 +9,9 @@ import (
 func setupFileCommand(app *kingpin.Application) {
 	fileCommand := app.Command("file", "Initialize a new empty file")
 
-	fileCommand.Command("init", "Initialize a new empty file").Default().Default()
+	fileCommand.Command("init", "Initialize a new empty file").Default()
+
+	fileCommand.Command("touch", "Simply load and save the file")
 }
 
 func handleFileCommand(commands []string) error {
@@ -20,6 +22,10 @@ func handleFileCommand(commands []string) error {
 	switch commands[1] {
 	case "init":
 		return handleInitFileCommand(commands)
+
+	case "touch":
+		return handleTouchFileCommand(commands)
+
 	default:
 		return errors.New(fmt.Sprintf("File subcommand not supported : %s", commands[1]))
 	}
@@ -31,4 +37,13 @@ func handleInitFileCommand(commands []string) error {
 	dioscoreaFile.Comment = *comment
 
 	return writeFile(filename, true, dioscoreaFile)
+}
+
+func handleTouchFileCommand(commands []string) error {
+	dioscoreaFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	return writeFile(filename, false, dioscoreaFile)
 }
