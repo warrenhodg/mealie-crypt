@@ -55,14 +55,14 @@ func handleValuesCommand(commands []string) error {
 }
 
 func handleListValuesCommand(commands []string) error {
-	var group DioscoreaGroup
+	var group MealieCryptGroup
 
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	group, found := dioscoreaFile.Groups[*valuesGroup]
+	group, found := mealieCryptFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
 	}
@@ -75,17 +75,17 @@ func handleListValuesCommand(commands []string) error {
 }
 
 func handleGetValueCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := dioscoreaFile.Users[*valuesUsername]
+	_, found := mealieCryptFile.Users[*valuesUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", *valuesUsername))
 	}
 
-	group, found := dioscoreaFile.Groups[*valuesGroup]
+	group, found := mealieCryptFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", *valuesGroup))
 	}
@@ -124,17 +124,17 @@ func handleGetValueCommand(commands []string) error {
 }
 
 func handleSetValueCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	_, found := dioscoreaFile.Users[*valuesUsername]
+	_, found := mealieCryptFile.Users[*valuesUsername]
 	if !found {
 		return errors.New(fmt.Sprintf("User not found : %s", valuesUsername))
 	}
 
-	group, found := dioscoreaFile.Groups[*valuesGroup]
+	group, found := mealieCryptFile.Groups[*valuesGroup]
 	if !found {
 		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
 	}
@@ -156,7 +156,7 @@ func handleSetValueCommand(commands []string) error {
 
 	group.Values[*valuesName] = encValue
 
-	dioscoreaFile.Groups[*valuesGroup] = group
+	mealieCryptFile.Groups[*valuesGroup] = group
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }

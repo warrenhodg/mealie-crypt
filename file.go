@@ -32,18 +32,18 @@ func handleFileCommand(commands []string) error {
 }
 
 func handleInitFileCommand(commands []string) error {
-	var dioscoreaFile DioscoreaFile
+	var mealieCryptFile MealieCryptFile
 
-	dioscoreaFile.Comment = *comment
+	mealieCryptFile.Comment = *comment
 
-	return writeFile(filename, true, dioscoreaFile)
+	return writeFile(filename, true, mealieCryptFile)
 }
 
 func handleTouchFileCommand(commands []string) error {
-	dioscoreaFile, err := readFile(filename, true)
+	mealieCryptFile, err := readFile(filename, true)
 	if err != nil {
 		return err
 	}
 
-	return writeFile(filename, false, dioscoreaFile)
+	return writeFile(filename, false, mealieCryptFile)
 }

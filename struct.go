@@ -11,45 +11,45 @@ import (
 
 var currentFileVersion = 1
 
-type DioscoreaFile struct {
-	Version int                       `yaml:"version"`
-	Comment string                    `yaml:"comment,omitempty"`
-	Users   map[string]DioscoreaUser  `yaml:"users,omitempty"`
-	Groups  map[string]DioscoreaGroup `yaml:"groups,omitempty"`
+type MealieCryptFile struct {
+	Version int                         `yaml:"version"`
+	Comment string                      `yaml:"comment,omitempty"`
+	Users   map[string]MealieCryptUser  `yaml:"users,omitempty"`
+	Groups  map[string]MealieCryptGroup `yaml:"groups,omitempty"`
 }
 
-type DioscoreaUser struct {
+type MealieCryptUser struct {
 	PublicKey string `yaml:"public_key"`
 	Comment   string `yaml:"comment,omitempty"`
 }
 
-type DioscoreaGroup struct {
+type MealieCryptGroup struct {
 	Keys      map[string]string `yaml:"keys"`
 	Values    map[string]string `yaml:"values"`
 	Decrypted map[string]string `yaml:"decrypted,omitempty"`
 }
 
-func (dioscoreaFile *DioscoreaFile) ensureMapsExist() {
-	if dioscoreaFile.Users == nil {
-		dioscoreaFile.Users = make(map[string]DioscoreaUser)
+func (mealieCryptFile *MealieCryptFile) ensureMapsExist() {
+	if mealieCryptFile.Users == nil {
+		mealieCryptFile.Users = make(map[string]MealieCryptUser)
 	}
 
-	if dioscoreaFile.Groups == nil {
-		dioscoreaFile.Groups = make(map[string]DioscoreaGroup)
+	if mealieCryptFile.Groups == nil {
+		mealieCryptFile.Groups = make(map[string]MealieCryptGroup)
 	}
 
-	for groupName, group := range dioscoreaFile.Groups {
+	for groupName, group := range mealieCryptFile.Groups {
 		if group.Values == nil {
 			group.Values = make(map[string]string)
-			dioscoreaFile.Groups[groupName] = group
+			mealieCryptFile.Groups[groupName] = group
 		}
 	}
 }
 
-func readFile(filename *string, mustExist bool) (dioscoreaFile DioscoreaFile, err error) {
+func readFile(filename *string, mustExist bool) (mealieCryptFile MealieCryptFile, err error) {
 	var file *os.File
 
-	defer dioscoreaFile.ensureMapsExist()
+	defer mealieCryptFile.ensureMapsExist()
 
 	_, err = os.Stat(*filename)
 	if os.IsNotExist(err) {
@@ -81,7 +81,7 @@ func readFile(filename *string, mustExist bool) (dioscoreaFile DioscoreaFile, er
 		return
 	}
 
-	err = yaml.Unmarshal(bytes, &dioscoreaFile)
+	err = yaml.Unmarshal(bytes, &mealieCryptFile)
 	if err != nil {
 		return
 	}
@@ -89,10 +89,10 @@ func readFile(filename *string, mustExist bool) (dioscoreaFile DioscoreaFile, er
 	return
 }
 
-func writeFile(filename *string, mustNotExist bool, dioscoreaFile DioscoreaFile) (err error) {
+func writeFile(filename *string, mustNotExist bool, mealieCryptFile MealieCryptFile) (err error) {
 	var file *os.File
 
-	dioscoreaFile.Version = currentFileVersion
+	mealieCryptFile.Version = currentFileVersion
 
 	if *filename == "-" {
 		file = os.Stdout
@@ -113,7 +113,7 @@ func writeFile(filename *string, mustNotExist bool, dioscoreaFile DioscoreaFile)
 
 	defer file.Close()
 
-	bytes, err := yaml.Marshal(dioscoreaFile)
+	bytes, err := yaml.Marshal(mealieCryptFile)
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,7 @@
-dioscorea.exe
-dioscorea.linux
-dioscorea.mac
+mealie-crypt.exe
+mealie-crypt.linux
+mealie-crypt.mac
 ~*
 *.bak
-dioscorea.yaml
+mealie-crypt.yaml
 vendor
