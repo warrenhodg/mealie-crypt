@@ -95,7 +95,12 @@ func handleGetValueCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("User not part of group : %s", *valuesUsername))
 	}
 
-	symKey, err := decryptSymmetricalKey(encSymKey, *valuesPrivateKeyFile)
+	pvtKey, err := readPrivateKey(*valuesPrivateKeyFile)
+	if err != nil {
+		return err
+	}
+
+	symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
 	if err != nil {
 		return err
 	}
@@ -109,7 +114,12 @@ func handleGetValueCommand(commands []string) error {
 		return err
 	}
 
-	for valueName, encValue := range group.Values {
+	for encValueName, encValue := range group.Values {
+		valueName, err := decryptValue(symKey, encValueName)
+		if err != nil {
+			return err
+		}
+
 		if g.Match(valueName) {
 			decValue, err := decryptValue(symKey, encValue)
 			if err != nil {
@@ -144,19 +154,68 @@ func handleSetValueCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("User not part of group : %s", *valuesUsername))
 	}
 
-	symKey, err := decryptSymmetricalKey(encSymKey, *valuesPrivateKeyFile)
+	pvtKey, err := readPrivateKey(*valuesPrivateKeyFile)
 	if err != nil {
 		return err
 	}
 
-	encValue, err := encryptValue(symKey, *valuesValue)
+	symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
 	if err != nil {
 		return err
 	}
 
-	group.Values[*valuesName] = encValue
+	encValueName, encValue, err := findEncValue(symKey, &group, *valuesName)
+	if err != nil {
+		return err
+	}
 
-	mealieCryptFile.Groups[*valuesGroup] = group
+	doAdd := true
+
+	if encValueName != "" {
+		decValue, err := decryptValue(symKey, encValue)
+		if err != nil {
+			return err
+		}
+
+		if decValue == *valuesValue {
+			doAdd = false
+		}
+	} else {
+		encValueName, err = encryptValue(symKey, *valuesName)
+		if err != nil {
+			return err
+		}
+	}
+
+	if doAdd {
+		encValue, err := encryptValue(symKey, *valuesValue)
+		if err != nil {
+			return err
+		}
+
+		group.Values[encValueName] = encValue
+
+		mealieCryptFile.Groups[*valuesGroup] = group
+	}
 
 	return writeFile(filename, false, mealieCryptFile)
+}
+
+func findEncValue(symKey string, group *MealieCryptGroup, valueName string) (encValueName string, encValue string, err error) {
+	for evn, ev := range group.Values {
+		var decValueName string
+
+		decValueName, err = decryptValue(symKey, evn)
+		if err != nil {
+			return
+		}
+
+		if decValueName == valueName {
+			encValueName = evn
+			encValue = ev
+			return
+		}
+	}
+
+	return
 }

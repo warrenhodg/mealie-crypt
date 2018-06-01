@@ -30,6 +30,11 @@ func handleEncryptCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("User not found : %s", *encryptUsername))
 	}
 
+	pvtKey, err := readPrivateKey(*encryptPrivateKeyFile)
+	if err != nil {
+		return err
+	}
+
 	for groupName, group := range mealieCryptFile.Groups {
 		encSymKey, found := group.Keys[*encryptUsername]
 		if found {
@@ -37,7 +42,7 @@ func handleEncryptCommand(commands []string) error {
 				group.Decrypted = make(map[string]string)
 			}
 
-			symKey, err := decryptSymmetricalKey(encSymKey, *encryptPrivateKeyFile)
+			symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
 			if err != nil {
 				return err
 			}
@@ -45,8 +50,12 @@ func handleEncryptCommand(commands []string) error {
 			for valueName, value := range group.Decrypted {
 				mustAdd := true
 
-				encValue, found := group.Values[valueName]
-				if found {
+				encValueName, encValue, err := findEncValue(symKey, &group, valueName)
+				if err != nil {
+					return err
+				}
+
+				if encValueName != "" {
 					decValue, err := decryptValue(symKey, encValue)
 					if err != nil {
 						return err
@@ -58,12 +67,19 @@ func handleEncryptCommand(commands []string) error {
 				}
 
 				if mustAdd {
+					if encValueName == "" {
+						encValueName, err = encryptValue(symKey, valueName)
+						if err != nil {
+							return err
+						}
+					}
+
 					newEncValue, err := encryptValue(symKey, value)
 					if err != nil {
 						return err
 					}
 
-					group.Values[valueName] = newEncValue
+					group.Values[encValueName] = newEncValue
 				}
 			}
 

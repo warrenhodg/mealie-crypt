@@ -184,7 +184,12 @@ func handleGroupAddUserCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("User not part of group : %s", *groupsUsername))
 	}
 
-	symKey, err := decryptSymmetricalKey(encSymKey, *groupsPrivateKeyFile)
+	pvtKey, err := readPrivateKey(*groupsPrivateKeyFile)
+	if err != nil {
+		return err
+	}
+
+	symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
 	if err != nil {
 		return err
 	}

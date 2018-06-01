@@ -86,7 +86,7 @@ func getPassword(prompt string) string {
 	return string(password)
 }
 
-func decryptSymmetricalKey(encSymKey string, privateKeyFile string) (symKey string, err error) {
+func readPrivateKey(privateKeyFile string) (pvtKey *rsa.PrivateKey, err error) {
 	privateKeyBytes, err := ioutil.ReadFile(privateKeyFile)
 	if err != nil {
 		return
@@ -113,11 +113,11 @@ func decryptSymmetricalKey(encSymKey string, privateKeyFile string) (symKey stri
 		}
 	}
 
-	pvtKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-	if err != nil {
-		return
-	}
+	pvtKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+	return
+}
 
+func decryptSymmetricalKey(encSymKey string, pvtKey *rsa.PrivateKey) (symKey string, err error) {
 	decBytes, err := rsa.DecryptOAEP(sha256.New(), rand.Reader, pvtKey, []byte(encSymKey), nil)
 	if err != nil {
 		return
