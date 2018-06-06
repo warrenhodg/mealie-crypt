@@ -45,7 +45,8 @@ endif
 
 ${DEP}:
 ifneq (${USE_DOCKER}, 1)
-	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+	go get -u github.com/golang/dep/cmd/dep
+	go build github.com/golang/dep/cmd/dep
 endif
 
 clean:
