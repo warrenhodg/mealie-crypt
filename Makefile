@@ -1,3 +1,4 @@
+GOPATH=$(shell go env GOPATH)
 PRODUCT=mealie-crypt
 FULL_PRODUCT=github.com/warrenhodg/${PRODUCT}
 GOLANG_DOCKER_IMAGE="golang:1.10"
