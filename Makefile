@@ -39,7 +39,7 @@ endif
 
 ${VENDOR}: ${DEP}
 ifneq (${USE_DOCKER}, 1)
-	dep ensure
+	${DEP} ensure
 	chmod 777 vendor
 endif
 
