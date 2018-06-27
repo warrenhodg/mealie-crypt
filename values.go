@@ -18,6 +18,7 @@ var valuesValue *string
 var listValuesCommand *kingpin.CmdClause
 var setValueCommand *kingpin.CmdClause
 var getValueCommand *kingpin.CmdClause
+var removeValueCommand *kingpin.CmdClause
 
 func setupValuesCommand(app *kingpin.Application) {
 	valuesCommand = app.Command("values", "Manage values")
@@ -33,6 +34,8 @@ func setupValuesCommand(app *kingpin.Application) {
 	setValueCommand = valuesCommand.Command("set", "Set value")
 
 	getValueCommand = valuesCommand.Command("get", "Get value")
+
+	removeValueCommand = valuesCommand.Command("remove", "Remove value")
 }
 
 func handleValuesCommand(commands []string) error {
@@ -46,6 +49,9 @@ func handleValuesCommand(commands []string) error {
 
 	case "get":
 		return handleGetValueCommand(commands)
+
+	case "remove":
+		return handleRemoveValueCommand(commands)
 
 	case "list":
 		return handleListValuesCommand(commands)
@@ -195,6 +201,50 @@ func handleSetValueCommand(commands []string) error {
 
 		group.Values[encValueName] = encValue
 
+		mealieCryptFile.Groups[*valuesGroup] = group
+	}
+
+	return writeFile(filename, false, mealieCryptFile)
+}
+
+func handleRemoveValueCommand(commands []string) error {
+	mealieCryptFile, err := readFile(filename, true)
+	if err != nil {
+		return err
+	}
+
+	_, found := mealieCryptFile.Users[*valuesUsername]
+	if !found {
+		return errors.New(fmt.Sprintf("User not found : %s", valuesUsername))
+	}
+
+	group, found := mealieCryptFile.Groups[*valuesGroup]
+	if !found {
+		return errors.New(fmt.Sprintf("Group not found : %s", valuesGroup))
+	}
+
+	encSymKey, found := group.Keys[*valuesUsername]
+	if !found {
+		return errors.New(fmt.Sprintf("User not part of group : %s", *valuesUsername))
+	}
+
+	pvtKey, err := readPrivateKey(*valuesPrivateKeyFile)
+	if err != nil {
+		return err
+	}
+
+	symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
+	if err != nil {
+		return err
+	}
+
+	encValueName, _, err := findEncValue(symKey, &group, *valuesName)
+	if err != nil {
+		return err
+	}
+
+	if encValueName != "" {
+		delete(group.Values, encValueName)
 		mealieCryptFile.Groups[*valuesGroup] = group
 	}
 

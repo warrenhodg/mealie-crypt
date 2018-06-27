@@ -9,7 +9,7 @@ import (
 
 var appName = "mealie-crypt"
 var appDescription = "Utility for teams to manage sensitive information"
-var version = "1.1.0"
+var version = "1.2.0"
 var copyrightYear = 2018
 var copyrightHolder = "Warren Hodgkinson"
 
