@@ -91,48 +91,45 @@ func handleGetValueCommand(commands []string) error {
 		return errors.New(fmt.Sprintf("User not found : %s", *valuesUsername))
 	}
 
-	group, found := mealieCryptFile.Groups[*valuesGroup]
-	if !found {
-		return errors.New(fmt.Sprintf("Group not found : %s", *valuesGroup))
-	}
-
-	encSymKey, found := group.Keys[*valuesUsername]
-	if !found {
-		return errors.New(fmt.Sprintf("User not part of group : %s", *valuesUsername))
-	}
-
-	pvtKey, err := readPrivateKey(*valuesPrivateKeyFile)
-	if err != nil {
-		return err
-	}
-
-	symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
-	if err != nil {
-		return err
-	}
-
 	if *valuesName == "" {
 		*valuesName = "*"
 	}
 
-	g, err := glob.Compile(*valuesName)
-	if err != nil {
-		return err
-	}
+	for groupName, group := range mealieCryptFile.Groups {
+		encSymKey, found := group.Keys[*valuesUsername]
+		if !found {
+			continue
+		}
 
-	for encValueName, encValue := range group.Values {
-		valueName, err := decryptValue(symKey, encValueName)
+		pvtKey, err := readPrivateKey(*valuesPrivateKeyFile)
 		if err != nil {
 			return err
 		}
 
-		if g.Match(valueName) {
-			decValue, err := decryptValue(symKey, encValue)
+		symKey, err := decryptSymmetricalKey(encSymKey, pvtKey)
+		if err != nil {
+			return err
+		}
+
+		g, err := glob.Compile(*valuesName)
+		if err != nil {
+			return err
+		}
+
+		for encValueName, encValue := range group.Values {
+			valueName, err := decryptValue(symKey, encValueName)
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("%s : %s\n", valueName, decValue)
+			if g.Match(valueName) {
+				decValue, err := decryptValue(symKey, encValue)
+				if err != nil {
+					return err
+				}
+
+				fmt.Printf("%s : %s = %s\n", groupName, valueName, decValue)
+			}
 		}
 	}
 

@@ -23,7 +23,7 @@ Typical flow of the application is:
     - edit the `decrypted` object in the file
     - `mealie-crypt encrypt`
 
-- Display the contents of group `_`: `mealie-crypt values get`
+- Search for stuff: `mealie-crypt values get -n '*stuff*'`
 
 ## Security
 Mealie-crypt works by:
