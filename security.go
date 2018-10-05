@@ -19,6 +19,7 @@ import (
 )
 
 var keyLenBits = 256
+var password = ""
 
 func readPublicKey(filename *string) (keyContent string, err error) {
 	pubKeyBytes, err := ioutil.ReadFile(*filename)
@@ -80,10 +81,14 @@ func encryptSymmetricalKey(symKey string, publicKey string) (encSymKey string, e
 }
 
 func getPassword(prompt string) string {
-	fmt.Printf("%s", prompt)
-	password, _ := terminal.ReadPassword(int(syscall.Stdin))
-	fmt.Printf("\n")
-	return string(password)
+	if password == "" {
+		fmt.Printf("%s", prompt)
+		passwordBytes, _ := terminal.ReadPassword(int(syscall.Stdin))
+		fmt.Printf("\n")
+		password = string(passwordBytes)
+	}
+
+	return password
 }
 
 func readPrivateKey(privateKeyFile string) (pvtKey *rsa.PrivateKey, err error) {
