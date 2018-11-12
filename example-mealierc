@@ -1,0 +1,17 @@
+---
+# Place this as .mealierc in your home directory
+
+# Default file name for mealie-crypt files
+# filename: mealie-crypt.yaml
+
+# Default username to use, in case your computer username is different to the mealie-crypt one
+# username: my-user-name
+
+# Default public key filename
+# public_key_file: ~/.ssh/id_rsa.pub
+
+# Default private key filename
+# private_key_file: ~/.ssh/id_rsa
+
+# Default group name
+# group_name = "_"
