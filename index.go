@@ -9,7 +9,7 @@ import (
 
 var appName = "mealie-crypt"
 var appDescription = "Utility for teams to manage sensitive information"
-var version = "1.2.1"
+var version = "1.2.2"
 var copyrightYear = 2018
 var copyrightHolder = "Warren Hodgkinson"
 
@@ -17,11 +17,13 @@ var filename *string
 var comment *string
 
 func addGlobalFlags(app *kingpin.Application) {
-	filename = app.Flag("file", "Name of file to manage").Short('f').Default("mealie-crypt.yaml").String()
+	filename = app.Flag("file", "Name of file to manage").Short('f').Default(configDefaults[keyFilename]).String()
 	comment = app.Flag("comment", "A comment").Short('c').String()
 }
 
 func main() {
+	initConfigDefaults()
+
 	app := kingpin.New(appName, appDescription)
 	app.Version(version)
 
