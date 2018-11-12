@@ -19,21 +19,21 @@ ${PRODUCT}.linux: *.go
 ifeq (${USE_DOCKER}, 1)
 	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} ${GOLANG_DOCKER_IMAGE} make linux
 else
-	GOOS=linux GOARCH=386 go build -o ${PRODUCT}.linux ${FULL_PRODUCT}
+	GOOS=linux GOARCH=386 go build -o ${PRODUCT}.linux
 endif
 
 ${PRODUCT}.mac: *.go
 ifeq (${USE_DOCKER}, 1)
 	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} ${GOLANG_DOCKER_IMAGE} make mac
 else
-	GOOS=darwin GOARCH=386 go build -o ${PRODUCT}.mac ${FULL_PRODUCT}
+	GOOS=darwin GOARCH=386 go build -o ${PRODUCT}.mac
 endif
 
 ${PRODUCT}.exe: *.go
 ifeq (${USE_DOCKER}, 1)
 	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} ${GOLANG_DOCKER_IMAGE} make windows
 else
-	GOOS=windows GOARCH=386 go build -o ${PRODUCT}.exe ${FULL_PRODUCT}
+	GOOS=windows GOARCH=386 go build -o ${PRODUCT}.exe
 endif
 
 clean:
