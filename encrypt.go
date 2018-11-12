@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
-	"os"
-	"path/filepath"
 )
 
 var encryptCommand *kingpin.CmdClause
@@ -15,8 +13,8 @@ var encryptPrivateKeyFile *string
 func setupEncryptCommand(app *kingpin.Application) {
 	encryptCommand := app.Command("encrypt", "Encrypt the encryptable parts of the file")
 
-	encryptUsername = encryptCommand.Flag("user", "Name of user").Short('u').Default(os.Getenv(userVar)).String()
-	encryptPrivateKeyFile = encryptCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(filepath.Join(os.Getenv(homeVar), ".ssh", "id_rsa")).String()
+	encryptUsername = encryptCommand.Flag("user", "Name of user").Short('u').Default(configDefaults[keyUsername]).String()
+	encryptPrivateKeyFile = encryptCommand.Flag("pvt-key", "Filename of private key").Short('k').Default(configDefaults[keyPrivateKeyFile]).String()
 }
 
 func handleEncryptCommand(commands []string) error {
