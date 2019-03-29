@@ -15,6 +15,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"io"
 	"io/ioutil"
+	"os"
 	"syscall"
 )
 
@@ -82,9 +83,9 @@ func encryptSymmetricalKey(symKey string, publicKey string) (encSymKey string, e
 
 func getPassword(prompt string) string {
 	if password == "" {
-		fmt.Printf("%s", prompt)
+		fmt.Fprintf(os.Stderr, "%s", prompt)
 		passwordBytes, _ := terminal.ReadPassword(int(syscall.Stdin))
-		fmt.Printf("\n")
+		fmt.Fprintf(os.Stderr, "\n")
 		password = string(passwordBytes)
 	}
 
