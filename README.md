@@ -31,6 +31,7 @@ Mealie-crypt works by:
 - Creating a 256 bit key `SYM_KEY` per group
 - Encrypting the group's key `SYM_KEY` with each user's public key `PUB_KEY` using OAEP algorithm, and storing those with the group
 - Encrypting each value in the group with the symmetrical key using AES-256 `SYM_KEY`
+- Encrypt private keys must have the DEK-Info section. New versions of ssh-keygen do not include this, so the key should be created with `ssh-keygen -m PEM`. To alter an existing key use `ssh-keygen -m PEM -p -f <file>`.
 
 ## Repository usage
 To use the encrypted file in a team, the following goals have been met:
