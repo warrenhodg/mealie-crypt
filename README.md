@@ -16,6 +16,10 @@ Typical flow of the application is:
   - Create some other group: `mealie-crypt groups add -g my-name`
   - Create group `_`, with specific users: `mealie-crypt groups add -U user1 -U user2`
 
+- Adding users to groups:
+  - Add user to existing group: `mealie-crypt group user-add -u your-name -U their-name`
+    - *You must be a part of the group to which you are adding users.*
+
 - Add values:
   - Add a value to group `_`: `mealie-crypt values set -n foo -v bar`
   - Decrypt, edit and re-encrypt:
