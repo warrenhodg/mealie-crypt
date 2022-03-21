@@ -26,7 +26,7 @@ ${PRODUCT}.mac: *.go
 ifeq (${USE_DOCKER}, 1)
 	docker run --rm -v ${PWD}:${GO_SRC}/${FULL_PRODUCT} -w ${GO_SRC}/${FULL_PRODUCT} ${GOLANG_DOCKER_IMAGE} make mac
 else
-	GOOS=darwin GOARCH=386 go build -o ${PRODUCT}.mac
+	GOOS=darwin GOARCH=amd64 go build -o ${PRODUCT}.mac
 endif
 
 ${PRODUCT}.exe: *.go
