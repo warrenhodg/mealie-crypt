@@ -29,10 +29,14 @@ func initConfigDefaults() {
 }
 
 func initMealierc() {
-	mealiercFilename := filepath.Join(os.Getenv(homeVar), mealierc)
+	mealiercFilename := mealierc
 	_, err := os.Stat(mealiercFilename)
 	if os.IsNotExist(err) {
-		return
+		mealiercFilename = filepath.Join(os.Getenv(homeVar), mealierc)
+		_, err := os.Stat(mealiercFilename)
+		if os.IsNotExist(err) {
+			return
+		}
 	}
 
 	file, err := os.Open(mealiercFilename)
